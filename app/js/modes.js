@@ -44,6 +44,7 @@
     <div class="p-body">
       <div class="chips" style="margin-bottom:6px">${puntos.length ? puntos.map(p => `<button class="chip on" data-act="rfly" data-k="${p}">📍 ${esc(short(nameOf(p)))}</button>`).join('') : '<button class="chip on" data-act="rfly" data-k="ALL">📍 Vista general</button>'}</div>
       <div class="step-text">${esc(sentence(it.texto))}</div>
+      ${it.nota ? `<p class="note" style="margin:6px 0 0">ℹ ${esc(it.nota)}</p>` : ''}
       <div class="badges">${tag(it.codigo)}${tag(it.sistema + ' · ' + it.clase)}${tag(TS.FREQ[it.frec] || it.frec)}${tag(TS.nivelLabel(it.nivel))}${it.min ? tag(it.min + ' min') : ''}${it.paro === 'SI' ? tag('Requiere paro', 'paro') : ''}</div>
       ${it.paro === 'SI' ? '<div class="callout stop"><b>⛔ Requiere paro del equipo.</b> Detén la máquina y aplica bloqueo y etiquetado (LOTO) antes de intervenir.</div>' : ''}
       ${it.herr ? `<p class="note" style="margin-top:8px">Herramientas: ${esc(sentence(it.herr))}</p>` : ''}

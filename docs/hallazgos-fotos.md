@@ -76,3 +76,27 @@ Interpretación para la v2 (se confirma al entregar): quitar la bomba de recircu
 1302 a las chumaceras de la flecha (foto 9) con una nota; la manguera blanca corrugada de drenaje sale del fondo de la tina
 y pasa junto a la Dossatron hacia el piso (fotos 5 y 7); caja inox gris en B3 que cubre motor, reductor, cople y el tramo
 de flecha.
+
+### Respuestas del usuario · parte 2
+
+- **Varillas blancas:** «lleva 4». Las «ruedas laterales» de la tarea 1101 **son las mismas varillas blancas** (no los cilindros blancos
+  de las varillas en J).
+- **Motorreductor:** no hay foto; «lo que pusiste en el modelado está bien, solo cambia lo que te dije» (posición B3, más corto, dentro de la caja).
+- **Medidas:** no tiene las reales; «no tiene que ser 100 % a la realidad, solo es para verlo».
+- **Fotos extra:** no tiene.
+
+## Cómo quedó la v2 (modelo reconstruido con las fotos)
+
+| Parte | Decisión | Foto / respuesta |
+|---|---|---|
+| Estructura | Tina de inox (1.64 m, fondo inclinado, labio) con la campana encima; 4 patas de tubo rectangular con niveladores atornilladas a la tina con placa; travesaños planos | 5, 6, 7 |
+| Campana | 0.8 m, asas en U en las dos caras, boca de entrada y de salida, cortinas de PVC (4 + 3 tiras anchas por boca) en varilla con ménsulas | 1, 6, 7, 11 |
+| Guías de desgaste | 4 varillas blancas bajo la banda que asoman por la entrada y se apoyan en una placa inox con muescas; q = 4 (taxonomía 5) | 8 + respuesta |
+| Guías laterales | Placas inox ranuradas junto a la banda y varillas inox en J con rodillo blanco de Naylamid | 1, 6, 9 |
+| Chumaceras | UCFL205 de carcasa blanca, sin domo, sobre placa inox atornillada a la pared de la tina | 1, 6, 9, 11 |
+| Cople | Mazas negras (jaw) visibles junto a la chumacera del lado B; segundo cople dentro de la caja | 9 + B3 |
+| Caja del motor | Caja inox gris 0.30 × 0.32 × 0.52 m en B3 que cubre flecha intermedia, 2.º cople, reductor y motor vertical (posición V6); tapa, pata propia y brazos a la pata de la tina | respuesta c y d |
+| Gabinete | A1, 0.34 × 0.23 × 0.17 m, un poste, ménsula a la tina, puerta con bisagra a la izquierda, piloto bicolor, botón rojo, llave a la derecha, paro BM13 en la puerta, desconectador rojo/amarillo en el costado izquierdo, solenoide y Eaton adentro | 2, 3, 4, 6 |
+| Dossatron | B2, abrazada al borde de la tina, te de PVC gris, tubo azul de succión a la garrafa, manguera transparente reforzada al niple de la tina, manguera crema de drenaje, clavija negra | 7, 10 |
+| Bomba de recirculación | Eliminada; la tarea 1302 se enlaza a las chumaceras con una nota «por confirmar» | respuesta f |
+| Aproximado | Boquilla, motorreductor, flecha intermedia, 2.º cople, rodillos de retorno, solenoide del túnel, variador, fuente y relevadores | no salen en fotos |

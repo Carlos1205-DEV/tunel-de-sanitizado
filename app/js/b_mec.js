@@ -1,9 +1,10 @@
-/* BOQUILLA DE ASPERSIÓN (Unijet) · MOTORREDUCTOR WEG 0.5 HP + REDUCTOR SIN FIN 40:1 + SOLENOIDE 3/4" · BOMBA DOSSATRON D14MZ2-D · BOTONERA BM13.
- * Referencia: imágenes 49–54 del Excel (nomenclatura de cada componente) y fotos 7 y 10 de la rutina mensual. */
+/* BOQUILLA DE ASPERSIÓN (Unijet) · MOTORREDUCTOR WEG 0.5 HP + REDUCTOR SIN FIN 40:1 (en la caja inox del lado B) + SOLENOIDE 3/4" (dentro del gabinete)
+ * · BOMBA DOSSATRON D14MZ2-D (abrazada al borde de la tina, lado B) · BOTONERA BM13 (paro de emergencia en la puerta del gabinete).
+ * Referencia: fotos 3, 4, 6, 7 y 10 de la rutina mensual, dibujos del manual (imágenes 49–54 del Excel) y respuestas del usuario. */
 (function () {
   'use strict';
   window.MODEL_BUILDERS.push(function (K) {
-    const { THREE, PI, TAU, el, box, rbox, cyl, torus, sphere, lathe, extrude, mesh, bolts, nuts, washers, pipe, spin, anim, state } = K;
+    const { THREE, PI, TAU, el, box, rbox, cyl, torus, sphere, lathe, extrude, mesh, bolts, nuts, washers, pipe, hose, spin, anim, state } = K;
     const L = K.L, P = K.parts;
     const grp = (parent, x, y, z) => { const o = new THREE.Group(); o.position.set(x, y, z); parent.add(o); return o; };
 
@@ -54,97 +55,111 @@
       });
     }
 
-    /* ---------- MOTORREDUCTOR · 1 motor WEG, 2 reductor sin fin, 3 solenoide ---------- */
+    /* ---------- MOTORREDUCTOR (dentro de la caja del lado B) · 1 motor WEG, 2 reductor sin fin, 3 solenoide (dentro del gabinete) ---------- */
     {
       const g1 = el('motorreductor', 1), g2 = el('motorreductor', 2), g3 = el('motorreductor', 3), M = L.motor, ys = L.ys;
-      // reductor de carcasa de aluminio: salida en Z, entrada (brida NEMA C56) en +X
+      // reductor de carcasa de aluminio: salida hueca en Z (hacia el cople), entrada (brida NEMA C56) hacia abajo, posición V6 del reductor
       g2.add(rbox(0.13, 0.15, 0.14, 0.022, 'alum', { pos: [M.x, ys, M.z] }));
       g2.add(cyl(0.05, 0.05, 0.012, 'alum', { axis: 'z', pos: [M.x, ys, M.z + 0.076], seg: 44 }));
       g2.add(cyl(0.05, 0.05, 0.012, 'alum', { axis: 'z', pos: [M.x, ys, M.z - 0.076], seg: 44 }));
       g2.add(torus(0.0285, 0.0045, 'black', { axis: 'z', pos: [M.x, ys, M.z + 0.083], seg: 32 }));             // retén de salida
       g2.add(cyl(0.0125, 0.0125, 0.09, 'steel', { axis: 'z', pos: [M.x, ys, M.z + 0.115], seg: 32 }));         // flecha hueca / eje de salida
-      g2.add(cyl(0.0295, 0.0295, 0.018, 'alum', { axis: 'x', pos: [M.x + 0.074, ys, M.z], seg: 40 }));
-      const fb = []; for (let i = 0; i < 4; i++) fb.push([M.x + 0.07, ys + Math.cos(i * PI / 2 + PI / 4) * 0.0445, M.z + Math.sin(i * PI / 2 + PI / 4) * 0.0445]);
-      g2.add(bolts(fb, 0.0075, 0.014, 'x', { mat: 'steel' }));
+      g2.add(cyl(0.0295, 0.0295, 0.018, 'alum', { pos: [M.x, ys - 0.074, M.z], seg: 40 }));                   // brida de entrada
+      const fb = []; for (let i = 0; i < 4; i++) fb.push([M.x + Math.cos(i * PI / 2 + PI / 4) * 0.0445, ys - 0.07, M.z + Math.sin(i * PI / 2 + PI / 4) * 0.0445]);
+      g2.add(bolts(fb, 0.0075, 0.014, 'ny', { mat: 'steel' }));
       g2.add(cyl(0.0115, 0.0115, 0.024, 'brass', { pos: [M.x - 0.02, ys + 0.087, M.z - 0.02], seg: 16 }));        // tapón de aceite
       g2.add(cyl(0.0085, 0.0085, 0.02, 'brass', { pos: [M.x - 0.03, ys - 0.082, M.z + 0.03], seg: 16 }));         // tapón de drenaje
       g2.add(rbox(0.05, 0.03, 0.04, 0.005, 'alum', { pos: [M.x, 0.8285, M.z] }));                                // pata para el brazo de reacción
       g2.add(K.label('REDUCTOR 40:1\n43.8 RPM', 0.07, 0.04, { bg: '#d8dde2', fg: '#111', fs: 20, pos: [M.x - 0.0, ys + 0.0, M.z + 0.0702 + 0.0] }));
       const o = grp(g2, M.x, ys, 0); spin(o, 'z', -1); o.add(cyl(0.0125, 0.0125, 0.085, 'steel', { axis: 'z', pos: [0, 0, M.z + 0.118 - 0.0], seg: 32 }));
-      // motor trifásico WEG TEFC con carcasa de lámina rolada
-      const mx = M.x + 0.083;
-      g1.add(cyl(0.062, 0.062, 0.19, 'weg', { axis: 'x', pos: [mx + 0.105, ys, M.z], seg: 48 }));
-      for (let i = 0; i < 3; i++) g1.add(torus(0.0625, 0.0032, 'weg', { axis: 'x', pos: [mx + 0.04 + i * 0.065, ys, M.z], seg: 48 }));
-      g1.add(cyl(0.064, 0.064, 0.012, 'weg', { axis: 'x', pos: [mx + 0.006, ys, M.z], seg: 48 }));
-      g1.add(lathe([[0.0, 0.0], [0.058, 0.0], [0.063, 0.006], [0.063, 0.045], [0.052, 0.058], [0.0, 0.058]], 'black', { axis: 'x', pos: [mx + 0.2, ys, M.z], seg: 48 }));
-      for (let i = 0; i < 12; i++) { const a = i * TAU / 12; g1.add(box(0.012, 0.0052, 0.0026, 'steelDark', { pos: [mx + 0.255, ys + Math.cos(a) * 0.045, M.z + Math.sin(a) * 0.045], rot: [-a, 0, 0], cast: false })); }
-      g1.add(rbox(0.07, 0.044, 0.062, 0.007, 'black', { pos: [mx + 0.105, ys + 0.077, M.z] }));                   // caja de conexiones
-      g1.add(cyl(0.011, 0.011, 0.022, 'steelDark', { pos: [mx + 0.105, ys + 0.108, M.z], seg: 20 }));
-      g1.add(K.label('WEG 0.5 HP\n4P 230/460V', 0.08, 0.045, { bg: '#e0e3e6', fg: '#0d2f66', fs: 22, pos: [mx + 0.105, ys + 0.02, M.z - 0.0], rot: [0, -PI / 2, 0] }));
-      g1.children[g1.children.length - 1].position.set(mx + 0.105, ys + 0.02, M.z - 0.0);
-      g1.add(rbox(0.12, 0.012, 0.13, 0.003, 'weg', { pos: [mx + 0.105, ys - 0.062, M.z], cast: false }));
-      // solenoide de 3/4" (agua) · bobina 220 VAC
-      const s1 = L.sol1, sg = grp(g3, s1[0], s1[1], s1[2]); sg.add(P.solenoid(1));
+      // motor trifásico WEG TEFC con carcasa de lámina rolada, colgado hacia abajo del reductor (se construye con el eje en +X y se gira 90°)
+      const mo = grp(g1, M.x, ys, M.z); mo.rotation.z = -PI / 2;
+      const mx = 0.083;
+      mo.add(cyl(0.062, 0.062, 0.19, 'weg', { axis: 'x', pos: [mx + 0.105, 0, 0], seg: 48 }));
+      for (let i = 0; i < 3; i++) mo.add(torus(0.0625, 0.0032, 'weg', { axis: 'x', pos: [mx + 0.04 + i * 0.065, 0, 0], seg: 48 }));
+      mo.add(cyl(0.064, 0.064, 0.012, 'weg', { axis: 'x', pos: [mx + 0.006, 0, 0], seg: 48 }));
+      mo.add(lathe([[0.0, 0.0], [0.058, 0.0], [0.063, 0.006], [0.063, 0.045], [0.052, 0.058], [0.0, 0.058]], 'black', { axis: 'x', pos: [mx + 0.2, 0, 0], seg: 48 }));
+      for (let i = 0; i < 12; i++) { const a = i * TAU / 12; mo.add(box(0.012, 0.0052, 0.0026, 'steelDark', { pos: [mx + 0.255, Math.cos(a) * 0.045, Math.sin(a) * 0.045], rot: [-a, 0, 0], cast: false })); }
+      mo.add(rbox(0.07, 0.044, 0.062, 0.007, 'black', { pos: [mx + 0.105, 0.077, 0] }));                         // caja de conexiones
+      mo.add(cyl(0.011, 0.011, 0.022, 'steelDark', { pos: [mx + 0.105, 0.108, 0], seg: 20 }));
+      mo.add(K.label('WEG 0.5 HP\n4P 230/460V', 0.08, 0.045, { bg: '#e0e3e6', fg: '#0d2f66', fs: 22, pos: [mx + 0.105, 0.0, -0.0625], rot: [0, PI, 0] }));
+      // solenoide de 3/4" (agua) · bobina 220 VAC: va en el fondo del gabinete (foto 4)
+      const cb = L.cab, cbBot = cb.y - cb.h / 2, sol = grp(g3, cb.x + 0.075, cbBot + 0.0215, cb.z + 0.01);
+      L.sol1 = [sol.position.x, sol.position.y, sol.position.z];
+      sol.add(P.solenoid(0.7));
+      const blue = pts => g3.add(hose(pts, 0.0072, 'cableBlue', { tension: 0.35, radial: 12 }));
+      const sx0 = L.sol1[0], sy0 = L.sol1[1], sz0 = L.sol1[2], pr = 0.088 * 0.7;
+      blue([[cb.x - 0.07, cbBot - 0.012, cb.z + 0.03], [cb.x - 0.07, cbBot + 0.02, cb.z + 0.03], [sx0 - pr, sy0, sz0]]);
+      blue([[sx0 + pr, sy0, sz0], [sx0 + pr + 0.02, sy0 + 0.04, sz0 + 0.012], [sx0 - 0.01, sy0 + 0.085, sz0 + 0.02], [cb.x - 0.02, sy0 + 0.07, sz0 + 0.02], [cb.x - 0.02, sy0 + 0.02, cb.z + 0.03], [cb.x - 0.02, cbBot - 0.012, cb.z + 0.03]]);
     }
 
-    /* ---------- solenoide del túnel (transmisión:33, sin número de parte en el manual): válvula de la línea hacia la campana ---------- */
+    /* ---------- solenoide del túnel (transmision:33, sin número de parte en el manual): válvula de la línea hacia la campana (aproximado) ---------- */
     {
-      const s2 = L.sol2, sg = grp(el('transmision', 33), s2[0], s2[1], s2[2]); const v = P.solenoid(0.8); v.rotation.y = 0.0; sg.add(v);
+      const s2 = L.sol2, sg = grp(el('transmision', 33), s2[0], s2[1], s2[2]); const v = P.solenoid(0.8); v.rotation.z = -PI / 2; sg.add(v);
     }
 
-    /* ---------- BOMBA DOSSATRON D14MZ2-D (dosificadora accionada por la presión del agua) ---------- */
+    /* ---------- BOMBA DOSSATRON D14MZ2-D abrazada al borde de la tina, lado B (fotos 7 y 10) ---------- */
     {
-      const g1 = el('dossatron', 1), d = L.dos, o = grp(g1, d.x, d.y, d.z);
-      // pedestal de apoyo
-      g1.add(rbox(0.20, 0.008, 0.20, 0.003, 'steelDark', { pos: [d.x, 0.016, d.z] }));
-      g1.add(rbox(0.035, 0.37, 0.035, 0.004, 'brushed', { pos: [d.x, 0.205, d.z] }));
-      g1.add(rbox(0.17, 0.008, 0.17, 0.003, 'steelDark', { pos: [d.x, 0.394, d.z] }));
-      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(k => g1.add(cyl(0.022, 0.022, 0.012, 'black', { pos: [d.x + k[0] * 0.08, 0.006, d.z + k[1] * 0.08], seg: 20 })));
-      // te de PVC con uniones
-      o.add(cyl(0.0235, 0.0235, 0.11, 'pvcGray', { axis: 'x', pos: [0, -0.0, 0], seg: 32 }));
-      [-1, 1].forEach(s => { o.add(cyl(0.031, 0.031, 0.02, 'pvcGray', { axis: 'x', pos: [s * 0.058, 0, 0], seg: 6 })); o.add(cyl(0.0125, 0.0125, 0.034, 'pvcGray', { axis: 'x', pos: [s * 0.083, 0, 0], seg: 20 })); });
-      o.add(cyl(0.0285, 0.0285, 0.06, 'pvcGray', { pos: [0, 0.04, 0], seg: 32 }));
-      o.add(lathe([[0.0285, 0.0], [0.04, 0.012], [0.0525, 0.035], [0.0525, 0.115], [0.049, 0.13]], 'pvcGray', { pos: [0, 0.07, 0], seg: 48 }));
-      o.add(cyl(0.0545, 0.0545, 0.014, 'black', { pos: [0, 0.207, 0], seg: 48 }));
-      o.add(lathe([[0.0485, 0.0], [0.0575, 0.008], [0.0585, 0.09], [0.0562, 0.112], [0.046, 0.152], [0.022, 0.18], [0.0, 0.1865]], 'dosBlue', { pos: [0, 0.214, 0], seg: 56 }));
-      o.add(cyl(0.0195, 0.0195, 0.03, 'black', { pos: [0, 0.414, 0], seg: 32 }));
-      o.add(cyl(0.0135, 0.0135, 0.008, 'steelDark', { pos: [0, 0.4325, 0], seg: 24 }));
-      o.add(K.label('DOSATRON\nD14MZ2', 0.07, 0.045, { bg: '#e9eef8', fg: '#0d3b8c', fs: 26, pos: [0, 0.29, 0.0592] }));
-      // toma de succión (barbo) hacia la garrafa
-      o.add(cyl(0.0105, 0.0105, 0.04, 'pvcGray', { axis: 'x', pos: [0.05, -0.04, 0.0], seg: 16 }));
-      o.add(cyl(0.0075, 0.0075, 0.03, 'pvcGray', { pos: [0.045, -0.015, 0.0], seg: 16 }));
-      o.add(cyl(0.0138, 0.0138, 0.02, 'pvcGray', { pos: [0.045, 0.035, 0.0], seg: 20 }));
-      const cl = P.hoseClamp(0.0098); cl.position.set(0.048, -0.04, 0); g1.add(cl); cl.parent.remove(cl); o.add(cl); cl.rotation.z = PI / 2;
-      // abrazadera de sujeción al pedestal
-      g1.add(torus(0.0295, 0.0035, 'steel', { axis: 'y', pos: [d.x, 0.425, d.z], seg: 28 }));
+      const g1 = el('dossatron', 1), d = L.dos, Y = L.dosY, o = grp(g1, d.x, 0, d.z), wallLoc = -(L.tray.zW + L.tray.t / 2) - d.z;   // z local de la cara exterior de la tina
+      const ty = Y.tee;
+      // te de PVC gris con uniones y púas (entrada de agua a la izquierda, salida a la derecha)
+      o.add(cyl(0.0235, 0.0235, 0.11, 'pvcGray', { axis: 'x', pos: [0, ty, 0], seg: 32 }));
+      [-1, 1].forEach(s => { o.add(cyl(0.031, 0.031, 0.02, 'pvcGray', { axis: 'x', pos: [s * 0.058, ty, 0], seg: 6 })); o.add(cyl(0.0125, 0.0125, 0.034, 'pvcGray', { axis: 'x', pos: [s * 0.083, ty, 0], seg: 20 })); });
+      o.add(cyl(0.0285, 0.0285, 0.05, 'pvcGray', { pos: [0, ty + 0.035, 0], seg: 32 }));
+      o.add(cyl(0.034, 0.034, 0.02, 'pvcGray', { pos: [0, ty + 0.07, 0], seg: 6 }));                              // tuerca de unión
+      // cuerpo negro nervado (motor hidráulico) y anillo blanco
+      o.add(cyl(0.035, 0.035, 0.11, 'black', { pos: [0, Y.housing + 0.055, 0], seg: 40 }));
+      for (let i = 0; i < 4; i++) o.add(torus(0.0352, 0.0011, 'black', { axis: 'y', pos: [0, Y.housing + 0.02 + i * 0.024, 0], seg: 40 }));
+      o.add(cyl(0.0425, 0.0425, 0.014, 'white', { pos: [0, Y.housing + 0.117, 0], seg: 40 }));
+      // domo azul con su tapa negra
+      const dy0 = Y.housing + 0.124;
+      o.add(lathe([[0.0425, 0.0], [0.0575, 0.008], [0.0585, 0.09], [0.0562, 0.112], [0.046, 0.152], [0.022, 0.178], [0.0, 0.185]], 'dosBlue', { pos: [0, dy0, 0], seg: 56 }));
+      o.add(cyl(0.0195, 0.0195, 0.03, 'black', { pos: [0, dy0 + 0.198, 0], seg: 32 }));
+      o.add(cyl(0.0135, 0.0135, 0.008, 'steelDark', { pos: [0, dy0 + 0.217, 0], seg: 24 }));
+      o.add(K.label('DOSATRON\nD14MZ2', 0.07, 0.045, { bg: '#1a3cae', fg: '#e6eeff', fs: 26, pos: [0, dy0 + 0.08, -0.0594], rot: [0, PI, 0] }));
+      // púas del cuerpo negro: succión (a la izquierda) y manguera transparente reforzada (a la derecha)
+      o.add(cyl(0.007, 0.007, 0.026, 'pvcGray', { axis: 'x', pos: [-0.046, 0.69, 0], seg: 14 }));
+      o.add(cyl(0.0125, 0.0125, 0.03, 'pvcGray', { axis: 'x', pos: [0.046, 0.715, -0.005], seg: 20 }));
+      o.add(cyl(0.012, 0.012, 0.03, 'pvcGray', { pos: [0.01, ty - 0.02, 0], seg: 20 }));                           // salida del drenaje crema
+      // abrazadera de acero inoxidable al cuello del domo y soporte atornillado a la pared de la tina
+      o.add(torus(0.0595, 0.004, 'steel', { axis: 'y', pos: [0, Y.clamp, 0], seg: 40 }));
+      o.add(rbox(0.03, 0.016, wallLoc - 0.0595 - 0.002, 0.003, 'inox', { pos: [0, Y.clamp, (wallLoc + 0.0595) / 2] }));
+      o.add(rbox(0.05, 0.11, 0.004, 0.002, 'inox', { pos: [0, 0.83, wallLoc - 0.002] }));
+      o.add(bolts([[-0.013, 0.855, wallLoc - 0.004], [-0.013, 0.805, wallLoc - 0.004]], 0.006, 0.014, 'nz', { mat: 'steel' }));
+      o.add(bolts([[0.013, 0.855, wallLoc - 0.004], [0.013, 0.805, wallLoc - 0.004]], 0.006, 0.014, 'nz', { mat: 'steel' }));
+      // abrazaderas de manguera en las púas
+      [[-0.052, 0.69, 0, PI / 2], [0.058, 0.715, -0.005, PI / 2], [-0.108, ty, 0, PI / 2], [0.108, ty, 0, PI / 2]].forEach((c, i) => { const cl = P.hoseClamp(i === 0 ? 0.0075 : 0.0132); cl.position.set(c[0], c[1], c[2]); cl.rotation.z = c[3]; o.add(cl); });
     }
 
-    /* ---------- BOTONERA BM13 · paro de emergencia con 2 placas, varilla y tornillería inoxidable ---------- */
+    /* ---------- BOTONERA BM13 · paro de emergencia con 2 placas, varilla y tornillería inoxidable, montada en la puerta del gabinete (foto 3) ---------- */
     {
-      const g1 = el('botonera', 1), g2 = el('botonera', 2), g3 = el('botonera', 3), g4 = el('botonera', 4), g5 = el('botonera', 5), g6 = el('botonera', 6), g7 = el('botonera', 7), g8 = el('botonera', 8), g9 = el('botonera', 9), g10 = el('botonera', 10), g11 = el('botonera', 11);
-      const x = 0.52, y = 0.56, zA = 0.2325, zB = 0.40;                 // placa 2 sobre la pata · placa 1 en el extremo de la varilla
+      const gs = [], fol = [];
+      for (let i = 1; i <= 11; i++) { gs[i] = el('botonera', i); fol[i] = new THREE.Group(); fol[i].userData.follow = true; gs[i].add(fol[i]); }
+      K.doorFollowers = fol.slice(1);
+      const cb = L.cab, x = cb.x + 0.01, y = cb.y - 0.084, zf = cb.z + cb.d / 2 + 0.01;   // cara exterior de la puerta cerrada
       const rp = (w, h, ho) => K.hullShape([[-w / 2 + 0.008, -h / 2 + 0.008, 0.008], [w / 2 - 0.008, -h / 2 + 0.008, 0.008], [-w / 2 + 0.008, h / 2 - 0.008, 0.008], [w / 2 - 0.008, h / 2 - 0.008, 0.008]], ho);
-      g3.add(extrude(rp(0.07, 0.07, [[-0.022, -0.022, 0.0042], [0.022, 0.022, 0.0042], [-0.022, 0.022, 0.0042], [0.022, -0.022, 0.0042]]), 0.005, 'steel', { seg: 8, pos: [x, y, zA] }));
-      g2.add(extrude(rp(0.07, 0.07, [[-0.024, -0.024, 0.0045], [0.024, 0.024, 0.0045], [-0.024, 0.024, 0.0045], [0.024, -0.024, 0.0045]]), 0.005, 'steel', { seg: 8, pos: [x, y, zB + 0.0025] }));
-      g4.add(cyl(0.0095, 0.0095, zB - zA - 0.005, 'steel', { axis: 'z', pos: [x, y, (zA + zB) / 2 + 0.0], seg: 24 }));
-      // pulsador con hongo rojo
-      const bz = zB + 0.005 + 0.03;
-      g1.add(rbox(0.07, 0.085, 0.06, 0.012, 'abLight', { pos: [x, y, bz] }));
-      g1.add(cyl(0.0295, 0.0295, 0.022, 'black', { pos: [x, y + 0.0535, bz], seg: 40 }));
-      g1.add(lathe([[0.0, 0.0], [0.0265, 0.0], [0.0335, 0.006], [0.0345, 0.016], [0.0295, 0.0235], [0.0, 0.0255]], 'red', { pos: [x, y + 0.062, bz], seg: 48 }));
-      g1.add(K.label('PARO DE\nEMERGENCIA', 0.06, 0.03, { bg: '#f3d317', fg: '#111', fs: 20, pos: [x, y - 0.012, bz + 0.0306] }));
-      K.estopCap = g1.children[g1.children.length - 2];
+      const qs = [[-0.02, -0.02], [0.02, 0.02], [-0.02, 0.02], [0.02, -0.02]];
+      const zP2 = zf + 0.002, zRod0 = zf + 0.004, zRod1 = zf + 0.012, zP1 = zf + 0.014;
+      fol[3].add(extrude(rp(0.056, 0.056, qs.map(q => [q[0], q[1], 0.0045])), 0.004, 'inox', { seg: 8, pos: [x, y, zP2] }));          // placa 2: sobre la puerta
+      fol[2].add(extrude(rp(0.056, 0.056, qs.map(q => [q[0], q[1], 0.0045])), 0.004, 'inox', { seg: 8, pos: [x, y, zP1] }));          // placa 1: sostiene el pulsador
+      fol[4].add(cyl(0.0095, 0.0095, zRod1 - zRod0, 'steel', { axis: 'z', pos: [x, y, (zRod0 + zRod1) / 2], seg: 24 }));               // varilla
+      // pulsador: cuerpo negro, collarín amarillo y hongo rojo
+      const zb = zP1 + 0.002;
+      fol[1].add(cyl(0.0225, 0.0225, 0.012, 'black', { axis: 'z', pos: [x, y, zb + 0.006], seg: 40 }));
+      fol[1].add(cyl(0.0245, 0.0245, 0.006, 'yellow', { axis: 'z', pos: [x, y, zb + 0.015], seg: 40 }));
+      const cap = lathe([[0.0, 0.0], [0.0205, 0.0], [0.0232, 0.006], [0.0238, 0.016], [0.0205, 0.0225], [0.0, 0.0245]], 'estop', { axis: 'z', pos: [x, y, zb + 0.018], seg: 48 });
+      fol[1].add(cap); K.estopCap = cap; K.estopCapZ = cap.position.z;
       // tornillería (nombres de la taxonomía): 7 tornillos de botón ×4, 8 rondanas planas ×8, 9 tuercas ×4, 10 allen ×2, 5/6 rondanas ×2, 11 tuercas de bellota ×2
-      const bp = [[-0.024, -0.024], [0.024, 0.024], [-0.024, 0.024], [0.024, -0.024]].map(q => [x + q[0], y + q[1]]);
-      g7.add(bolts(bp.map(q => [q[0], q[1], zB - 0.0035]), 0.0064, 0.057, 'nz', { mat: 'steel' }));
-      g8.add(washers(bp.map(q => [q[0], q[1], zB - 0.0000]), 0.0064, 'z', { mat: 'steel' }));
-      g8.add(washers(bp.map(q => [q[0], q[1], zB + 0.0505]), 0.0064, 'z', { mat: 'steel' }));
-      g9.add(nuts(bp.map(q => [q[0], q[1], zB + 0.0545]), 0.0064, 'z', { mat: 'steel' }));
-      g10.add(bolts([[x - 0.022, y - 0.022, zA - 0.0075 + 0.0], [x + 0.022, y + 0.022, zA - 0.0075]].map(p => [p[0], p[1], zA + 0.0025 + 0.0]).map(p => [p[0], p[1], zA + 0.0025]), 0.0079, 0.019, 'z', { mat: 'steel' }));
-      g5.add(washers([[x, y, zA + 0.0025 + 0.0015], [x, y, zB - 0.0025 - 0.0015]], 0.0079, 'z', { mat: 'steel' }));
-      g6.add(washers([[x, y, zA + 0.0025 + 0.0045], [x, y, zB - 0.0025 - 0.0045]], 0.0079, 'z', { mat: 'steelDark' }));
-      [zA, zB].forEach((z, i) => { const s = i ? -1 : 1, o = grp(g11, x, y, z + (i ? -0.0025 : 0.0025) + s * 0.0075); o.add(nuts([[0, 0, 0]], 0.0079, 'z', { mat: 'steel' })); o.add(sphere(0.0069, 'steel', { pos: [0, 0, s * 0.0052], scl: [1, 1, 0.8] })); });
-      K.setEstopLook = v => { if (K.estopCap) K.estopCap.position.y = (v ? -0.006 : 0) + y + 0.062; };
+      const bp = qs.map(q => [x + q[0], y + q[1]]);
+      fol[7].add(bolts(bp.map(q => [q[0], q[1], zP1 + 0.002]), 0.0064, 0.022, 'z', { mat: 'steel' }));
+      fol[8].add(washers(bp.map(q => [q[0], q[1], zP1 + 0.0035]), 0.0064, 'z', { mat: 'steel' }));
+      fol[8].add(washers(bp.map(q => [q[0], q[1], zP1 - 0.0045]), 0.0064, 'z', { mat: 'steel' }));
+      fol[9].add(nuts(bp.map(q => [q[0], q[1], zP1 - 0.0095]), 0.0064, 'z', { mat: 'steel' }));
+      fol[10].add(bolts([[x - 0.02, y - 0.02, zP2 + 0.0025], [x + 0.02, y + 0.02, zP2 + 0.0025]], 0.0079, 0.019, 'z', { mat: 'steel' }));
+      fol[5].add(washers([[x, y, zRod0 + 0.0015], [x, y, zRod1 - 0.0015]], 0.0079, 'z', { mat: 'steel' }));
+      fol[6].add(washers([[x, y, zRod0 + 0.0045], [x, y, zRod1 - 0.0045]], 0.0079, 'z', { mat: 'steelDark' }));
+      [[zRod0 - 0.0075, -1], [zRod1 + 0.0075 + 0.002, 1]].forEach(([z, s]) => { const o = grp(fol[11], x, y, z); o.add(nuts([[0, 0, 0]], 0.0079, 'z', { mat: 'steel' })); o.add(sphere(0.0069, 'steel', { pos: [0, 0, s * 0.0052], scl: [1, 1, 0.8] })); });
+      K.setEstopLook = v => { if (K.estopCap) K.estopCap.position.z = K.estopCapZ - (v ? 0.006 : 0); };
     }
   });
 })();

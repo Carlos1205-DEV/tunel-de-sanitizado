@@ -1,28 +1,38 @@
 /* Layout general, piso y biblioteca de piezas reutilizables (chumaceras, sprockets, acoplamientos, mangueras).
- * Referencia: ensamble general del Excel (imagen 57), fotos de la rutina mensual y taxonomía del túnel. */
+ * Referencia: fotos de planta de las rutinas (docs/hallazgos-fotos.md) y respuestas del usuario sobre dónde va cada sistema.
+ * La taxonomía del Excel solo aporta nombres, cantidades y medidas de las piezas; la forma y el lugar salen de las fotos. */
 (function () {
   'use strict';
   window.MODEL_BUILDERS.push(function (K) {
     const { THREE, PI, TAU, box, rbox, cyl, torus, sphere, lathe, extrude, mesh, mat, context, comps, bolts, merge, tr, hose } = K;
 
-    /* ---------- LAYOUT (metros). X = banda (entrada -X, salida +X), Y = altura, Z = profundidad (+Z lado del operador) ---------- */
+    /* ---------- LAYOUT (metros). X = banda (ENTRADA con las varillas blancas en -X, salida en +X), Y = altura,
+     *  Z = LADO A (+Z, el del gabinete: foto 6) y LADO B (-Z, bomba Dossatron y caja del motorreductor).
+     *  Zonas del croquis: 1 = entrada, 2 = centro, 3 = salida.  Gabinete en A1, Dossatron + garrafa en B2, motor en B3. ---------- */
     const L = K.L = {
       ys: 0.88,            // eje de las flechas (altura)
       R: 0.049,            // radio primitivo del sprocket de 12 dientes
       Lc: 1.196,           // distancia entre ejes (banda de 2.7 m de perímetro)
       sx: 0.598,           // posición X de las flechas (±)
       bw: 0.33,            // ancho de la banda
-      legX: 0.52, railZ: 0.205, railY: 0.86,
+      legX: 0.71, legZ: 0.251,
       bearZ: 0.2365,       // plano de las chumaceras (±)
-      hood: { x0: -0.30, x1: 0.40, y0: 0.82, y1: 1.22, hw: 0.255, winW: 0.38, winY0: 0.90, winY1: 1.14 },
-      sump: { x0: -0.35, x1: 0.45, z0: -0.31, z1: 0.31, yTop: 0.795, yBot: 0.52 },
-      cab: { x: 1.0, y: 0.80, z: 0.50, w: 0.42, h: 0.36, d: 0.19 },
-      dos: { x: -0.38, z: 0.40, y: 0.47 },
-      sol1: [-0.74, 0.47, 0.40], sol2: [-0.20, 0.84, 0.305],
-      jug: { x: -0.70, z: 0.56 },
-      motor: { x: 0.598, z: -0.70 },
+      // tina de acero inoxidable: la banda va dentro y la campana se apoya en su borde (fotos 5, 6, 7)
+      tray: { x0: -0.82, x1: 0.82, yTop: 0.90, yBot: 0.55, yS: 0.80, zW: 0.2235, zB: 0.14, t: 0.003, lip: 0.022 },
+      hood: { x0: -0.40, x1: 0.40, y0: 0.903, y1: 1.22, hw: 0.229, winW: 0.38, winY0: 0.918, winY1: 1.10, t: 0.008 },
+      // 4 varillas blancas de Naylamid bajo la banda; asoman por la entrada y se apoyan en una placa con muescas (foto 8)
+      rod: { x0: -0.862, x1: 0.56, r: 0.0135, y: 0.911, zs: [-0.0975, -0.0325, 0.0325, 0.0975], plateX: -0.832 },
+      cab: { x: -0.36, y: 0.66, z: 0.32, w: 0.34, h: 0.23, d: 0.17 },                   // gabinete en A1 (puerta hacia +Z)
+      dos: { x: -0.04, z: -0.31 },                                                       // eje de la Dossatron en B2
+      jug: { x: -0.08, z: -0.47 },                                                       // garrafa en el piso, B2
+      dosY: { tee: 0.60, housing: 0.665, clamp: 0.835, top: 1.0 },                       // alturas de la Dossatron (te de PVC, cuerpo negro, abrazadera, tapa)
+      box: { x0: 0.448, x1: 0.748, y0: 0.46, y1: 0.98, z0: -0.43, z1: -0.75 },           // caja inox del motorreductor en B3
+      motor: { x: 0.598, z: -0.665 },
+      sol2: [0.06, 0.80, -0.285],                                                        // solenoide de la línea hacia la campana (aproximado)
       nozzle: { x: 0.05, y: 1.13, z: 0.0 }
     };
+    // z de la pared de la tina a una altura dada (vertical arriba, inclinada abajo)
+    L.wallZ = y => { const T = L.tray; return y >= T.yS ? T.zW : T.zB + (T.zW - T.zB) * Math.max(0, y - T.yBot) / (T.yS - T.yBot); };
     K.parts = {};
     const P = K.parts;
 
@@ -65,17 +75,36 @@
     }
     K.hullShape = hullShape;
 
-    /* ---------- chumacera de brida UCFL205 (eje 25 mm), brida en el plano XY y cuerpo hacia +Z ---------- */
+    /* ---------- abertura (hueco) de esquinas redondeadas para placas: ranuras, ventanas, muescas ---------- */
+    K.rrectHole = function (cx, cy, w, h, r) {
+      r = Math.min(r, w / 2 - 1e-5, h / 2 - 1e-5);
+      const p = new THREE.Path(), x0 = cx - w / 2, x1 = cx + w / 2, y0 = cy - h / 2, y1 = cy + h / 2;
+      p.moveTo(x0 + r, y0); p.quadraticCurveTo(x0, y0, x0, y0 + r); p.lineTo(x0, y1 - r); p.quadraticCurveTo(x0, y1, x0 + r, y1);
+      p.lineTo(x1 - r, y1); p.quadraticCurveTo(x1, y1, x1, y1 - r); p.lineTo(x1, y0 + r); p.quadraticCurveTo(x1, y0, x1 - r, y0); p.closePath();
+      return p;
+    };
+    // placa rectangular (centrada) con huecos: ojos redondos [x,y,r] y ranuras [cx,cy,w,h]
+    K.plateShape = function (w, h, rounds, slots, rc) {
+      const s = new THREE.Shape(), r = rc || 0;
+      if (r > 0) { s.moveTo(-w / 2 + r, -h / 2); s.lineTo(w / 2 - r, -h / 2); s.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r); s.lineTo(w / 2, h / 2 - r); s.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); s.lineTo(-w / 2 + r, h / 2); s.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); s.lineTo(-w / 2, -h / 2 + r); s.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2); }
+      else { s.moveTo(-w / 2, -h / 2); s.lineTo(w / 2, -h / 2); s.lineTo(w / 2, h / 2); s.lineTo(-w / 2, h / 2); }
+      s.closePath();
+      (rounds || []).forEach(q => { const p = new THREE.Path(); p.absarc(q[0], q[1], q[2], 0, TAU, true); s.holes.push(p); });
+      (slots || []).forEach(q => s.holes.push(K.rrectHole(q[0], q[1], q[2], q[3], Math.min(q[2], q[3]) / 2)));
+      return s;
+    };
+
+    /* ---------- chumacera de brida UCFL205 (eje 25 mm) de carcasa blanca de termoplástico, brida en el plano XY y cuerpo hacia +Z ---------- */
     P.ucfl205 = function (cap) {
       const g = new THREE.Group(), hs = 0.0477;
-      g.add(extrude(hullShape([[-hs, 0, 0.0165], [hs, 0, 0.0165], [0, 0, 0.034]], [[-hs, 0, 0.0066], [hs, 0, 0.0066], [0, 0, 0.0245]]), 0.012, 'steel', { seg: 10 }));
-      g.add(lathe([[0.0245, 0.006], [0.0345, 0.006], [0.0358, 0.014], [0.0345, 0.026], [0.030, 0.034], [0.0287, 0.040], [0.0287, 0.046], [0.0245, 0.046], [0.0245, 0.006]], 'steel', { axis: 'z', seg: 56 }));
-      g.add(cyl(0.0262, 0.0262, 0.036, 'steelDark', { axis: 'z', pos: [0, 0, 0.032], seg: 48 }));
-      g.add(lathe([[0.0245, -0.006], [0.031, -0.006], [0.031, -0.011], [0.0245, -0.011]], 'steelDark', { axis: 'z', seg: 40 }));
+      g.add(extrude(hullShape([[-hs, 0, 0.0165], [hs, 0, 0.0165], [0, 0, 0.034]], [[-hs, 0, 0.0066], [hs, 0, 0.0066], [0, 0, 0.0245]]), 0.012, 'whiteHousing', { seg: 10 }));
+      g.add(lathe([[0.0245, 0.006], [0.0345, 0.006], [0.0358, 0.014], [0.0345, 0.026], [0.030, 0.034], [0.0287, 0.040], [0.0287, 0.046], [0.0245, 0.046], [0.0245, 0.006]], 'whiteHousing', { axis: 'z', seg: 56 }));
+      g.add(cyl(0.0262, 0.0262, 0.036, 'steel', { axis: 'z', pos: [0, 0, 0.032], seg: 48 }));                                  // inserto de acero inoxidable
+      g.add(lathe([[0.0245, -0.006], [0.031, -0.006], [0.031, -0.011], [0.0245, -0.011]], 'black', { axis: 'z', seg: 40 }));      // sello trasero
       g.add(cyl(0.0042, 0.0042, 0.02, 'brass', { pos: [0, 0.0405, 0.02], seg: 10 }));
       g.add(sphere(0.0055, 'brass', { pos: [0, 0.0515, 0.02] }));
       g.add(cyl(0.0036, 0.0036, 0.014, 'steelDark', { pos: [0.0305, 0.0, 0.043], axis: 'x', seg: 10 }));
-      if (cap) g.add(lathe([[0.0287, 0.030], [0.0322, 0.033], [0.0322, 0.060], [0.027, 0.070], [0.014, 0.0765], [0.0, 0.078]], 'steel', { axis: 'z', seg: 56 }));
+      if (cap) g.add(lathe([[0.0287, 0.030], [0.0322, 0.033], [0.0322, 0.060], [0.027, 0.070], [0.014, 0.0765], [0.0, 0.078]], 'whiteHousing', { axis: 'z', seg: 56 }));
       return g;
     };
 
@@ -96,15 +125,15 @@
       return g;
     };
 
-    /* ---------- acoplamiento de mordaza (jaw): maza con garras y araña de buna (eje Z) ---------- */
+    /* ---------- acoplamiento de mordaza (jaw) negro: maza con garras y araña de buna (eje Z) ---------- */
     P.jawHub = function (r, len, dir) {   // maza: cuerpo de z=0 a z=-len*dir y garras hacia +dir
-      const g = new THREE.Group(), cl = new THREE.Shape(), a0 = 0.18, a1 = TAU / 6 - 0.0 - 0.18;
-      g.add(cyl(r, r, len, 'steel', { axis: 'z', pos: [0, 0, -dir * len / 2], seg: 40 }));
-      g.add(cyl(r * 1.0, r * 0.82, len * 0.18, 'steelDark', { axis: 'z', pos: [0, 0, dir * len * 0.09 - dir * 0.0], seg: 40 }));
+      const g = new THREE.Group();
+      g.add(cyl(r, r, len, 'blackOx', { axis: 'z', pos: [0, 0, -dir * len / 2], seg: 40 }));
+      g.add(cyl(r * 1.0, r * 0.82, len * 0.18, 'blackOx', { axis: 'z', pos: [0, 0, dir * len * 0.09 - dir * 0.0], seg: 40 }));
       for (let i = 0; i < 3; i++) {
         const sh = new THREE.Shape(), a = i * TAU / 3, b = a + TAU / 6 - 0.16;
         sh.moveTo(Math.cos(a + 0.08) * r * 0.5, Math.sin(a + 0.08) * r * 0.5); sh.absarc(0, 0, r * 0.98, a + 0.08, b, false); sh.lineTo(Math.cos(b) * r * 0.5, Math.sin(b) * r * 0.5); sh.absarc(0, 0, r * 0.5, b, a + 0.08, true);
-        const cm = extrude(sh, len * 0.5, 'steel', { seg: 10 }); cm.position.z = dir * len * 0.25; g.add(cm);
+        const cm = extrude(sh, len * 0.5, 'blackOx', { seg: 10 }); cm.position.z = dir * len * 0.25; g.add(cm);
       }
       g.add(cyl(r * 0.1, r * 0.1, r * 0.6, 'steelDark', { pos: [0, r * 0.75, -dir * len * 0.55], seg: 10 }));
       return g;
@@ -123,7 +152,7 @@
     K.ribbed = function (points, r, matName, spacing, o) {
       const g = new THREE.Group(), c = new THREE.CatmullRomCurve3(points.map(a => new THREE.Vector3(a[0], a[1], a[2])), false, 'catmullrom', 0.4), len = c.getLength();
       g.add(mesh(new THREE.TubeGeometry(c, Math.max(16, Math.round(len * 80 * K.detail)), r, 16, false), matName, o));
-      const n = Math.max(2, Math.floor(len / spacing)), tg = K.geo('rib' + r, () => new THREE.TorusGeometry(r * 1.05, r * 0.14, 8, 20)), im = new THREE.InstancedMesh(tg, K.mat(matName), n);
+      const n = Math.max(2, Math.floor(len / spacing)), tg = K.geo('rib' + r, () => new THREE.TorusGeometry(r * 1.05, r * 0.14, 8, 20)), im = new THREE.InstancedMesh(tg, K.mat(matName, o && o.mat), n);
       const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), z = new THREE.Vector3(0, 0, 1), one = new THREE.Vector3(1, 1, 1);
       for (let i = 0; i < n; i++) { const t = (i + 0.5) / n; q.setFromUnitVectors(z, c.getTangentAt(t)); m4.compose(c.getPointAt(t), q, one); im.setMatrixAt(i, m4); }
       im.castShadow = true; im.frustumCulled = false; g.add(im); return g;

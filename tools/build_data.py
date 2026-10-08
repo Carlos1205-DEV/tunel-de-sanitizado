@@ -50,6 +50,9 @@ for r in rows[16:92]:
         'i': len(taxo[cur]['items']) + 1, 'no': int(no), 'n': name,
         'm': '' if clean(r[4]) in ('', 'N/A') else clean(r[4]),
         'p': '' if clean(r[5]) in ('', 'N/A') else clean(r[5]), 'q': qty})
+# en planta las guías de desgaste (varillas blancas) son 4 y no 5 (lo confirmó el personal de planta)
+for it in taxo['transmision']['items']:
+    if it['i'] == 12: it['q_tax'] = it['q']; it['q'] = 4
 # pendientes sin número de parte
 for it in taxo['transmision']['items']:
     if it['p'].startswith('PENDIENTE'):
@@ -58,18 +61,18 @@ for it in taxo['transmision']['items']:
 
 # componentes que no están en la taxonomía del Excel pero salen en las rutinas, fotos y fallas
 EXTRA = {
-    'id': 'cubierta', 'sys': 'mec', 'name': 'Campana, cortinas y tanque',
-    'desc': 'Piezas que no figuran en la taxonomía del Excel pero aparecen en las rutinas, las fotos y el historial de fallas: campana del túnel, cortinas (hawaianas), tanque colector, garrafa de sanitizante, mangueras y bomba de recirculación. Se modelaron a partir de las fotos de referencia.',
+    'id': 'cubierta', 'sys': 'mec', 'name': 'Campana, cortinas, tina y caja del motor',
+    'desc': 'Piezas que no figuran en la taxonomía del Excel pero aparecen en las rutinas, las fotos de planta y el historial de fallas: campana del túnel, cortinas de PVC (hawaianas), tina (charola) de acero inoxidable, mangueras, garrafa de sanitizante y la caja de acero inoxidable que cubre el motorreductor en el lado B. Se modelaron a partir de las fotos de las rutinas y de lo que indicó el personal de planta.',
     'extra': 1,
     'items': [
         {'i': 1, 'no': 0, 'n': 'CAMPANA DEL TÚNEL (CUBIERTA DE ACERO INOXIDABLE)', 'm': 'ACERO INOXIDABLE', 'p': '', 'q': 1, 'x': 1},
         {'i': 2, 'no': 0, 'n': 'CORTINAS HAWAIANAS DE ENTRADA', 'm': 'PVC TRANSPARENTE', 'p': '', 'q': 7, 'x': 1},
         {'i': 3, 'no': 0, 'n': 'CORTINAS HAWAIANAS DE SALIDA', 'm': 'PVC TRANSPARENTE', 'p': '', 'q': 7, 'x': 1},
-        {'i': 4, 'no': 0, 'n': 'TANQUE COLECTOR (CHAROLA DE DRENADO)', 'm': 'ACERO INOXIDABLE', 'p': '', 'q': 1, 'x': 1},
-        {'i': 5, 'no': 0, 'n': 'MANGUERA DE DRENAJE', 'm': '', 'p': '', 'q': 1, 'x': 1},
-        {'i': 6, 'no': 0, 'n': 'GARRAFA DE SANITIZANTE Y MANGUERA DE SUCCIÓN', 'm': 'POLIETILENO', 'p': '', 'q': 1, 'x': 1},
-        {'i': 7, 'no': 0, 'n': 'MANGUERAS, TUBERÍA DE AGUA Y CONDUIT', 'm': '', 'p': '', 'q': 1, 'x': 1},
-        {'i': 8, 'no': 0, 'n': 'BOMBA DE RECIRCULACIÓN DE AGUA', 'm': '', 'p': '', 'q': 1, 'x': 1},
+        {'i': 4, 'no': 0, 'n': 'TINA (CHAROLA) DE ACERO INOXIDABLE · TANQUE COLECTOR', 'm': 'ACERO INOXIDABLE', 'p': '', 'q': 1, 'x': 1},
+        {'i': 5, 'no': 0, 'n': 'MANGUERAS DE DRENAJE', 'm': '', 'p': '', 'q': 2, 'x': 1},
+        {'i': 6, 'no': 0, 'n': 'GARRAFA DE SANITIZANTE Y TUBO DE SUCCIÓN', 'm': 'POLIETILENO', 'p': '', 'q': 1, 'x': 1},
+        {'i': 7, 'no': 0, 'n': 'MANGUERAS AZULES Y TRANSPARENTE, TUBERÍA DE LA CAMPANA Y CONDUIT', 'm': '', 'p': '', 'q': 1, 'x': 1},
+        {'i': 8, 'no': 0, 'n': 'CAJA DE ACERO INOXIDABLE DEL MOTORREDUCTOR (LADO B)', 'm': 'ACERO INOXIDABLE', 'p': '', 'q': 1, 'x': 1},
     ]}
 comps_out = [taxo[c[0]] for c in COMPS] + [EXTRA]
 TAXO = {'sistemas': {'mec': 'Sistema mecánico', 'ele': 'Sistema eléctrico'}, 'comps': comps_out}
@@ -106,25 +109,28 @@ CODE2PER = {'1101': 'TS01-INSP-MEC-01', '1102': 'TS01-INSP-MEC-02', '1103': 'TS0
 SYSNAME = {'1': 'Mecánico', '2': 'Neumático', '3': 'Eléctrico', '4': 'Hidráulico', '5': 'Instrumentación', '6': 'Lubricación', '7': 'General'}
 CLASSNAME = {'1': 'Inspección', '2': 'Predictivo', '3': 'Preventivo'}
 # fotos de referencia (ver ref_XX.jpg) y puntos del 3D que cubre cada tarea
-FOTO = {'1101': 'ref_01', '1102': 'ref_11', '1103': 'ref_09', '1104': 'ref_01', '1105': 'ref_07', '1106': 'ref_08', '1107': 'ref_09',
+FOTO = {'1101': 'ref_08', '1102': 'ref_11', '1103': 'ref_09', '1104': 'ref_01', '1105': 'ref_07', '1106': 'ref_08', '1107': 'ref_09',
         '1108': 'ref_11', '1109': 'ref_10', '1301': 'ref_09', '3101': 'ref_03', '3201': 'ref_09', '3302': 'ref_04', '7101': 'ref_06',
-        '7102': 'ref_05', '1302': 'ref_10', '1304': 'ref_09', '1305': 'ref_09', '1306': 'ref_11', '3301': 'ref_04'}
+        '7102': 'ref_05', '1302': 'ref_a1', '1303': 'ref_a1', '1304': 'ref_a1', '1305': 'ref_a1', '1306': 'ref_a1', '1307': 'ref_a1', '3301': 'ref_04'}
 PUNTOS = {
-    '1101': ['transmision:17', 'transmision:18'], '1102': ['transmision:19'], '1103': ['transmision:35', 'transmision:34', 'transmision:22'],
+    '1101': ['transmision:12', 'transmision:15'], '1102': ['transmision:19'], '1103': ['transmision:35', 'transmision:34', 'transmision:22'],
     '1104': ['transmision:19'], '1105': ['dossatron:1', 'cubierta:6'], '1106': ['transmision:12', 'transmision:15'],
     '1107': ['transmision:20', 'transmision:6', 'transmision:32'], '1108': ['cubierta:2', 'cubierta:3'],
     '1109': ['spray:1', 'dossatron:1'], '1301': ['transmision:21', 'transmision:10', 'transmision:11'],
     '3101': ['comp:gabinete'], '3201': ['motorreductor:1', 'motorreductor:2'], '3302': ['comp:gabinete'],
     '7101': ['ALL'], '7102': ['transmision:1', 'transmision:12', 'transmision:15'],
-    '1302': ['cubierta:8'], '1303': ['motorreductor:2'], '1304': ['transmision:35', 'transmision:34'], '1305': ['motorreductor:2'],
+    '1302': ['transmision:21'], '1303': ['motorreductor:2'], '1304': ['transmision:35', 'transmision:34'], '1305': ['motorreductor:2'],
     '1306': ['transmision:19'], '1307': ['motorreductor:1'], '3301': ['gabinete:5', 'gabinete:1', 'motorreductor:3']}
+# notas que se muestran en la ruta guiada (respuestas del personal de planta)
+NOTAS = {'1101': 'Según el personal de planta, los «rodillos y ruedas laterales» son las 4 varillas blancas de la entrada (foto 8).',
+         '1302': 'En planta no hay una bomba de recirculación aparte (no sale en ninguna foto) y la foto de la rutina anual señala la chumacera de la flecha; por eso se enlazan las chumaceras. Por confirmar.'}
 def ficha(fid, titulo, periodo, path):
     items = []
     for code, text in docx_items(path):
         per = CODE2PER[code]; t = tareas.get(per, {})
         items.append({'codigo': code, 'per': per, 'texto': text, 'sistema': SYSNAME[code[0]], 'clase': CLASSNAME[code[1]],
                       'frec': t.get('frec', ''), 'paro': t.get('paro', ''), 'nivel': t.get('nivel', ''), 'min': t.get('min', 0),
-                      'herr': t.get('herr', ''), 'foto': FOTO.get(code, ''), 'puntos': PUNTOS[code]})
+                      'herr': t.get('herr', ''), 'foto': FOTO.get(code, ''), 'puntos': PUNTOS[code], 'nota': NOTAS.get(code, '')})
     return {'id': fid, 'titulo': titulo, 'periodo': periodo, 'items': items}
 fichas = [ficha('mensual', 'Rutina mensual', 'Equipo operando · inspección, predictivo y limpieza', REPO + '/RUTINA MENSUAL TUNEL DE SANITIZADO 01 EQUIPO OPERANDO.docx'),
           ficha('anual', 'Rutina anual', 'Equipo parado · cambios preventivos y limpieza', REPO + '/RUTINA ANUAL TUNEL DE SANITIZADO 01 EQUIPO PARADO.docx')]
@@ -166,12 +172,12 @@ REF_ELEM = [
     (r'SPREA', ['spray:1']), (r'SOLENOIDE', ['motorreductor:3']), (r'MOTOR ELECTRICO', ['motorreductor:1']), (r'REDUCTOR NEMA', ['motorreductor:2']),
     (r'DOSSATRON', ['dossatron:1']), (r'BOTON PARO', ['botonera:1']), (r'PLACA 1 BOTONERA', ['botonera:2']), (r'PLACA 2 BOTONERA', ['botonera:3']),
     (r'VARILLA BOTONERA', ['botonera:4']), (r'ESTRUCTURA TUNEL', ['transmision:1']), (r'CUÑA FLECHA', ['transmision:6']),
-    (r'GUIA DE DESGASTE', ['transmision:12']), (r'BANDA MODULAR', ['transmision:19']), (r'SPROCKET', ['transmision:20']),
+    (r'SOPORTE GUIA DE DESGASTE', ['transmision:15']), (r'GUIA DE DESGASTE', ['transmision:12']), (r'BANDA MODULAR', ['transmision:19']), (r'SPROCKET', ['transmision:20']),
     (r'HAWAIANAS', ['cubierta:2', 'cubierta:3']), (r'PERNO PLACA', ['transmision:2']), (r'PLACA SOPORTE ESTRUCTURA', ['transmision:3']),
     (r'FLECHA MOTOR', ['transmision:7']), (r'RODILLO CONDUCIDO', ['transmision:8']), (r'RODILLO MOTRIZ', ['transmision:9']),
     (r'RODILLO BANDA', ['transmision:17']), (r'SOPORTE RODILLO', ['transmision:18']), (r'CHUMACERA COCOL', ['transmision:21']),
     (r'COPLE MORDAZA \(MOTOR\)', ['transmision:22']), (r'COPLE MORDAZA \(TUNEL\)', ['transmision:34']), (r'ELEMENTO BUNA', ['transmision:35']),
-    (r'PLACA 1 CHUMACERA', ['transmision:10']), (r'PLACA 2 CHUMACERA', ['transmision:11']), (r'SOPORTE GUIA DE DESGASTE', ['transmision:15']),
+    (r'PLACA 1 CHUMACERA', ['transmision:10']), (r'PLACA 2 CHUMACERA', ['transmision:11']),
     (r'SELENOIDE', ['transmision:33']), (r'GUARDA MOTOR', ['gabinete:5']), (r'VARIADOR', ['gabinete:10']), (r'TERMICO 3x10', ['gabinete:1']),
     (r'TERMICO 3x20', ['gabinete:2']), (r'CONTACTOR', ['gabinete:4']), (r'FUENTE', ['gabinete:6']), (r'RELEVADOR FINDER 220', ['gabinete:7']),
     (r'RELEVADOR FINDER 24', ['gabinete:8']), (r'RELEVADOR DE 14', ['gabinete:9']), (r'BOTON LATERAL', ['gabinete:3']),
@@ -210,6 +216,8 @@ def save(data, name, maxs=1000, q=84):
 zm = zipfile.ZipFile(REPO + '/REFERENCIA VISUAL MENSUAL (TUNEL DE SANITIZADO 01).docx')   # fotos de la rutina mensual
 for i in range(1, 12):
     save(zm.read('word/media/image%d.jpeg' % i), 'ref_%02d' % i)
+za = zipfile.ZipFile(REPO + '/REFERENCIA VISUAL ANUAL (TUNEL DE SANITIZADO 01).docx')    # foto de la rutina anual (chumacera y cople)
+save(za.read('word/media/image1.jpeg'), 'ref_a1')
 zx = zipfile.ZipFile(XLSX)                                                                # ilustraciones del manual (hoja de taxonomía)
 for src, name in [('image49', 'x_spray'), ('image50', 'x_motorreductor'), ('image51', 'x_solenoide'), ('image52', 'x_dossatron'),
                   ('image53', 'x_botonera_desp'), ('image54', 'x_botonera_foto'), ('image55', 'x_transmision'),

@@ -22,7 +22,11 @@
 - `app/`: la aplicación (`index.html`, `js/`, `css/`, `data/`, `img/`, `lib/`). `js/b_*.js` construyen el 3D por secciones;
   `js/app.js` es la interfaz; `js/modes.js` trae Ruta guiada, Práctica y Análisis.
 - `tools/build_data.py`: regenera `app/data` y `app/img` a partir del Excel y los .docx.
-- `docs/hallazgos-fotos.md`: lo que se ve en cada foto de planta y en qué difiere la primera versión del modelo.
+- `docs/hallazgos-fotos.md`: lo que se ve en cada foto de planta, en qué difería la primera versión, las preguntas y las respuestas del usuario.
+- Distribución confirmada por el usuario (v2): X = banda (entrada con las 4 varillas blancas en −X), +Z = LADO A (el del gabinete, foto 6),
+  −Z = LADO B. Gabinete en A1; Dossatron + garrafa en B2; flecha motriz con cople negro, motorreductor y caja inox gris en B3; no hay bomba
+  de recirculación; guías de desgaste = 4 varillas blancas (son los «rodillos y ruedas laterales» de la tarea 1101). Medidas aproximadas.
+  Lo no fotografiado lleva `aprox: 1` en `app/data/info.js` (insignia «Aproximado»).
 - Publicada como Artifact: https://claude.ai/artifact/7Vjq6QNtnZawTEM6vwZara. Para actualizarla se publica con `url`; el
   `index.html` se sube sin `<html>`, `<head>` ni `<body>` (el visor los agrega) y el resto con `files` y `root=app/`.
 - Pruebas visuales: Playwright de Node (`/opt/node22/lib/node_modules/playwright`) con Chromium y

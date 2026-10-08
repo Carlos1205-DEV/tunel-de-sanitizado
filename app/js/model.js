@@ -34,7 +34,7 @@
 
     /* ---------- explosión general: cada elemento se aleja del centro de la máquina ---------- */
     {
-      const M = new THREE.Vector3(0.1, 0.75, 0.0);
+      const M = new THREE.Vector3(0.0, 0.75, 0.0);
       TAXO.comps.forEach(c => {
         K.comps[c.id].children.slice().forEach(ch => {
           const b = objBox(ch); if (b.isEmpty()) return;

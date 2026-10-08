@@ -1,6 +1,6 @@
 /* Núcleo geométrico del modelo 3D — TÚNEL DE SANITIZADO 01 (OP TS01)
- * Unidades: metros.  X = sentido de la banda (entrada en -X, salida y motorreductor en +X)
- * Y = altura.  Z = profundidad (lado del operador, gabinete y Dossatron en +Z; motorreductor en -Z).
+ * Unidades: metros.  X = sentido de la banda (entrada con las varillas blancas en -X, salida en +X).
+ * Y = altura.  Z = profundidad: LADO A en +Z (el del gabinete, foto 6) y LADO B en -Z (bomba Dossatron y caja del motorreductor).
  * Todo es procedural (sin archivos externos) y con alta resolución de malla. */
 (function () {
   'use strict';
@@ -28,6 +28,7 @@
     gray:       { color: 0x8b9198, metalness: 0.4,  roughness: 0.5 },
     lightGray:  { color: 0xc9cdd1, metalness: 0.25, roughness: 0.55 },
     cabinet:    { color: 0xb4bcc4, metalness: 0.55, roughness: 0.45 },
+    inox:       { color: 0xbcc3ca, metalness: 0.6,  roughness: 0.5 },     // chapa de acero inoxidable de la tina, la campana y las cajas (gris metálico)
     brass:      { color: 0xb59a4a, metalness: 0.85, roughness: 0.35 },
     uhmw:       { color: 0xf1f1ec, metalness: 0.0,  roughness: 0.7 },
     pp:         { color: 0xe9ecef, metalness: 0.0,  roughness: 0.5 },
@@ -47,12 +48,16 @@
     naylamid:   { color: 0xf3f1e8, metalness: 0.0,  roughness: 0.55 },   // guías de desgaste
     pvcClear:   { color: 0xaec3ee, metalness: 0.0,  roughness: 0.12, transparent: true, opacity: 0.42, side: 2, depthWrite: false },
     hoseClear:  { color: 0xdfe6ea, metalness: 0.0,  roughness: 0.1,  transparent: true, opacity: 0.5, depthWrite: false },
-    jug:        { color: 0xf4f6f7, metalness: 0.0,  roughness: 0.32, transparent: true, opacity: 0.88 },
+    jug:        { color: 0xf1f3f0, metalness: 0.0,  roughness: 0.36, transparent: true, opacity: 0.96 },
     pvcGray:    { color: 0x6c7279, metalness: 0.0,  roughness: 0.5 },
     dosBlue:    { color: 0x1536a8, metalness: 0.1,  roughness: 0.45, envMapIntensity: 0.6 },
     alum:       { color: 0x9aa3ab, metalness: 0.7,  roughness: 0.5 },
     conduit:    { color: 0x7a8088, metalness: 0.35, roughness: 0.55 },
     whiteHose:  { color: 0xe6e3da, metalness: 0.0,  roughness: 0.6 },
+    creamHose:  { color: 0xe3dcc6, metalness: 0.0,  roughness: 0.65 },
+    whiteHousing: { color: 0xe8e6de, metalness: 0.0, roughness: 0.42 },   // chumaceras de carcasa blanca (termoplástico)
+    blackOx:    { color: 0x23272b, metalness: 0.7,  roughness: 0.5 },     // mazas del cople en acero oxidado negro
+    estop:      { color: 0xd9381e, metalness: 0.1,  roughness: 0.45 },    // hongo del paro de emergencia
     mist:       { color: 0xcfe6ff, metalness: 0.0,  roughness: 0.3 }
   };
 

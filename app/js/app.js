@@ -36,7 +36,7 @@
   }
   // nombre limpio de un elemento (quita el sufijo repetido del manual y corrige erratas de la taxonomía)
   function clean(n) {
-    n = String(n || '').replace(/\s*(DE\s+)?TUNEL DE DESINFECTADO PARA QUESO MADURADO QUALTIA QUERETARO REV A\.1/i, '').replace(/SELENOIDE/i, 'SOLENOIDE').replace(/\s*,\s*$/, '');
+    n = String(n || '').replace(/\s+(DE\s+)?TUNEL DE DESINFECTADO PARA QUESO MADURADO QUALTIA QUERETARO REV A\.1/i, '').replace(/SELENOIDE/i, 'SOLENOIDE').replace(/\s*,\s*$/, '');
     return nice(n);
   }
   const compOf = sel => sel ? (sel.kind === 'elem' ? ELEM[sel.id].comp : sel.id) : null;
@@ -76,7 +76,7 @@
   const camera = new THREE.PerspectiveCamera(34, 1, 0.03, 90);
   camera.position.set(2.7, 1.75, 3.1);
   const controls = new THREE.OrbitControls(camera, canvas);
-  controls.enableDamping = true; controls.dampingFactor = 0.09; controls.target.set(0.3, 0.72, 0.1);
+  controls.enableDamping = true; controls.dampingFactor = 0.09; controls.target.set(0.05, 0.72, 0.0);
   controls.minDistance = 0.25; controls.maxDistance = 10; controls.maxPolarAngle = Math.PI * 0.497; controls.autoRotate = true; controls.autoRotateSpeed = 0.8; controls.screenSpacePanning = true;
 
   function makeEnv() {
@@ -177,19 +177,20 @@
   const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
   const VIEWS = [
     { g: 'Generales' },
-    { id: 'iso', n: 'Isométrica', p: [2.7, 1.75, 3.1], t: [0.3, 0.72, 0.1] },
-    { id: 'front', n: 'Frente · lado del operador', p: [0.3, 1.15, 3.9], t: [0.3, 0.85, 0.0] },
-    { id: 'back', n: 'Trasera · lado del motor', p: [0.3, 1.2, -3.9], t: [0.3, 0.85, -0.1] },
-    { id: 'entrada', n: 'Entrada de la banda', p: [-3.9, 1.25, 0.1], t: [0.0, 0.9, 0.0] },
-    { id: 'salida', n: 'Salida de la banda', p: [3.9, 1.25, 0.15], t: [0.4, 0.9, 0.0] },
-    { id: 'top', n: 'Superior', p: [0.3, 4.2, 0.12], t: [0.3, 0.8, 0.0] },
+    { id: 'iso', n: 'Isométrica', p: [2.7, 1.75, 3.1], t: [0.05, 0.72, 0.0] },
+    { id: 'front', n: 'Lado A · gabinete', p: [0.0, 1.15, 3.9], t: [0.0, 0.8, 0.0] },
+    { id: 'back', n: 'Lado B · bomba y motor', p: [0.0, 1.2, -3.9], t: [0.1, 0.8, -0.1] },
+    { id: 'entrada', n: 'Entrada · varillas blancas', p: [-3.9, 1.25, 0.1], t: [-0.3, 0.85, 0.0] },
+    { id: 'salida', n: 'Salida de la banda', p: [3.9, 1.25, 0.15], t: [0.3, 0.85, 0.0] },
+    { id: 'top', n: 'Superior', p: [0.0, 4.2, 0.12], t: [0.0, 0.8, 0.0] },
     { g: 'Detalle' },
-    { id: 'trans', n: 'Transmisión y motorreductor', p: [1.65, 1.25, -1.55], t: [0.65, 0.88, -0.42] },
-    { id: 'banda', n: 'Banda y sprockets', p: [-1.55, 1.25, 1.2], t: [-0.35, 0.9, 0.05] },
+    { id: 'trans', n: 'Caja, cople y motorreductor', p: [1.9, 1.3, -1.5], t: [0.6, 0.82, -0.42] },
+    { id: 'banda', n: 'Banda y sprockets', p: [-1.2, 1.6, 1.3], t: [-0.2, 0.9, 0.05] },
+    { id: 'rods', n: 'Varillas blancas de la entrada', p: [-2.0, 1.2, 1.1], t: [-0.7, 0.9, 0.0] },
     { id: 'campana', n: 'Interior de la campana', p: [0.95, 1.65, 1.2], t: [0.05, 0.98, 0.0], xray: true },
-    { id: 'gab', n: 'Gabinete eléctrico', p: [1.15, 1.05, 1.75], t: [1.0, 0.8, 0.5] },
-    { id: 'dos', n: 'Dossatron y garrafa', p: [-1.35, 0.9, 1.9], t: [-0.55, 0.5, 0.45] },
-    { id: 'bajo', n: 'Bajo la banda: tanque y bomba', p: [0.6, 0.4, 2.4], t: [0.15, 0.55, 0.0] }
+    { id: 'gab', n: 'Gabinete eléctrico', p: [0.15, 0.95, 1.75], t: [-0.36, 0.66, 0.35] },
+    { id: 'dos', n: 'Dossatron y garrafa', p: [0.6, 0.95, -1.75], t: [-0.05, 0.65, -0.35] },
+    { id: 'bajo', n: 'Bajo la banda: tina y mangueras', p: [0.6, 0.35, 2.6], t: [0.0, 0.55, 0.0] }
   ];
   let tween = null, curView = 'iso';
   const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -198,7 +199,7 @@
   function stopAuto() { if (controls.autoRotate) { controls.autoRotate = false; setChk('rot', false); } $('#hint').style.opacity = 0; }
   function setViewLabel(id) { curView = id; const v = VIEWS.find(x => x.id === id); $('#vistaLbl').textContent = v ? v.n.split(' · ')[0] : 'Libre'; $$('#menuVista [data-v]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.v === id))); }
   let viewXray = false;
-  const viewScale = () => camera.aspect < 0.9 ? 0.64 : 1;   // en pantallas verticales se acerca la cámara
+  const viewScale = () => camera.aspect < 0.9 ? 0.74 : 1;   // en pantallas verticales se acerca la cámara
   function viewPos(v) { const t = V3(...v.t); return t.clone().add(V3(...v.p).sub(t).multiplyScalar(viewScale())); }
   function setView(id) {
     const v = VIEWS.find(x => x.id === id); if (!v) return;
@@ -208,7 +209,7 @@
   function viewDir(c, id) {
     let d;
     if (c.z < -0.3) d = V3(0.35, 0.4, -1);
-    else if (id === 'gabinete') d = V3(0.15, 0.12, 1);
+    else if (id === 'gabinete' || (Math.abs(c.x + 0.36) < 0.2 && c.z > 0.22 && c.z < 0.42 && c.y > 0.52 && c.y < 0.8)) d = V3(0.15, 0.12, 1);   // gabinete (y el solenoide que lleva dentro): se mira desde la derecha de la puerta abierta
     else if (c.y > 0.93 && c.y < 1.3 && Math.abs(c.x) < 0.5 && Math.abs(c.z) < 0.3) d = V3(0.25, 0.85, 0.7);
     else if (c.y < 0.45) d = V3(0.2, 0.22, 1);
     else d = V3((c.x >= 0 ? 1 : -1) * 0.28, 0.45, 1);
@@ -251,7 +252,7 @@
   /* ---------- despiece ---------- */
   const dpinsEl = document.createElement('div'); dpinsEl.id = 'dpins'; $('#app').appendChild(dpinsEl);
   function clearPins() { dpinsEl.innerHTML = ''; D.pins = []; }
-  const EXTRA_NAMES = { 'gabinete:caja': 'Caja del gabinete', 'gabinete:pedestal': 'Pedestal', 'gabinete:puerta': 'Puerta con operadores', 'gabinete:cables': 'Cableado interior' };
+  const EXTRA_NAMES = { 'gabinete:caja': 'Caja del gabinete', 'gabinete:pedestal': 'Poste y ménsula', 'gabinete:puerta': 'Puerta con operadores', 'gabinete:cables': 'Cableado interior' };
   function buildPins() {
     clearPins(); const L = despiece.comp; if (!L) return;
     L.items.forEach(it => {
@@ -477,11 +478,11 @@
     let body = '';
     if (S.tab === 'resumen') {
       body = `<p class="p-desc">${esc(im.d || 'Elemento de la taxonomía del túnel.')}</p>
-        <div class="badges">${tag(plural(D0.tareas.length, 'tarea', 'tareas'))}${tag(plural(D0.refs.length, 'refacción', 'refacciones'))}${crit ? tag(crit + ' crítica' + (crit > 1 ? 's' : ''), 'crit') : ''}${tag(plural(D0.fallas.length, 'OT', 'OT'))}${e.pend ? tag('Sin No. de parte', 'nuevo') : ''}${e.x ? tag('No figura en la taxonomía', 'nuevo') : ''}</div>
+        <div class="badges">${tag(plural(D0.tareas.length, 'tarea', 'tareas'))}${tag(plural(D0.refs.length, 'refacción', 'refacciones'))}${crit ? tag(crit + ' crítica' + (crit > 1 ? 's' : ''), 'crit') : ''}${tag(plural(D0.fallas.length, 'OT', 'OT'))}${e.pend ? tag('Sin No. de parte', 'nuevo') : ''}${e.x ? tag('No figura en la taxonomía', 'nuevo') : ''}${im.aprox ? tag('Aproximado · no sale en las fotos', 'nuevo') : ''}</div>
         <div class="card" style="border-left:3px solid ${c.color}">
         <div class="kv"><span>Nombre completo</span><b>${esc(clean(e.n))}</b></div>
         <div class="kv"><span>Elemento</span><b>${idx + 1} de ${c.n}${e.no ? ' · No. ' + e.no + ' en la taxonomía' : ''}</b></div>
-        <div class="kv"><span>Cantidad</span><b>${e.q} ${e.q === 1 ? 'pieza' : 'piezas'}</b></div>
+        <div class="kv"><span>Cantidad</span><b>${e.q} ${e.q === 1 ? 'pieza' : 'piezas'}${e.q_tax ? ' · la taxonomía indica ' + e.q_tax : ''}</b></div>
         <div class="kv"><span>No. de parte</span><b>${esc(e.p || '—')}</b></div>
         <div class="kv"><span>Material</span><b>${esc(e.m || '—')}</b></div>
         <div class="kv"><span>Sección</span><b>${esc(c.name)}</b></div></div>
@@ -513,7 +514,7 @@
     const mec = TAXO.comps.filter(c => c.sys === 'mec'), ele = TAXO.comps.filter(c => c.sys === 'ele'), pcs = a => a.reduce((x, c) => x + c.pieces, 0);
     const crit = DATA.refs.filter(r => r.sev === 'CRÍTICO').length;
     return `<div class="p-head"><div class="p-sys">Vista general</div><div class="p-title">Túnel de sanitizado 01</div></div>
-      <div class="p-body"><p class="p-desc">Modelo 3D construido con la taxonomía del Excel: cada uno de los <b>${TOTAL_EL} elementos</b> está modelado y agrupado en su sección. Gíralo, toca cualquier pieza y verás qué es, qué se revisa en las rutinas, qué refacciones lleva y cómo ha fallado.</p>
+      <div class="p-body"><p class="p-desc">Modelo 3D hecho con las <b>fotos de planta</b> de las rutinas; la taxonomía del Excel aporta los nombres, secciones, partes y refacciones. Cada uno de los <b>${TOTAL_EL} elementos</b> está modelado y agrupado en su sección. Gíralo, toca cualquier pieza y verás qué es, qué se revisa en las rutinas, qué refacciones lleva y cómo ha fallado.</p>
       <div class="btns"><button class="btn pri" data-act="tour">▶ Recorrido por las secciones</button></div>
       <div class="kpis" style="margin:14px 0"><div class="kpi"><b>${TAXO.comps.length}</b><span>secciones</span></div><div class="kpi"><b>${TOTAL_EL}</b><span>elementos</span></div><div class="kpi"><b>${TASKS.length}</b><span>tareas (mensual y anual)</span></div><div class="kpi"><b>${DATA.fallas.length}</b><span>OT en el historial</span></div></div>
       <h3 class="sec">Prueba esto</h3>
@@ -523,7 +524,7 @@
       <button class="card click" data-act="mode" data-m="ruta"><b class="t">Ruta guiada</b><small>Recorre las rutinas mensual (${DATA.fichas[0].items.length} puntos) y anual (${DATA.fichas[1].items.length} puntos) con las claves B, BP, BCF, X y N/A, ubicando cada punto en el 3D.</small></button>
       <button class="card click" data-act="mode" data-m="practica"><b class="t">Práctica</b><small>Ubica piezas y responde preguntas generadas con tus rutinas y refacciones.</small></button>
       <button class="card click" data-act="mode" data-m="analisis"><b class="t">Análisis</b><small>Pareto de las ${DATA.fallas.length} OT, refacciones críticas (${crit}) y mapa de calor sobre el modelo.</small></button>
-      <p class="note" style="margin-top:12px">Datos de <b>TUNEL SANITIZADO FORMATO.xlsx</b> y de las rutinas mensual y anual. El modelo es una representación didáctica; la banda se ve azul como en planta y la campana, las cortinas, el tanque y la bomba de recirculación se modelaron con las fotos.</p></div>`;
+      <p class="note" style="margin-top:12px">Datos de <b>TUNEL SANITIZADO FORMATO.xlsx</b> y de las rutinas mensual y anual. El modelo es una representación didáctica: la tina, la campana, las cortinas, las mangueras y la caja del motorreductor se dibujaron con las fotos y lo que indicó el personal de planta; lo que no sale en ninguna foto se marca como «aproximado». Lado A = el del gabinete; lado B = el de la bomba y el motor.</p></div>`;
   }
   ACT.tab = d => { S.tab = d.t; renderPanel(); };
   ACT.elem = d => select({ kind: 'elem', id: d.key });
@@ -624,7 +625,7 @@
   }
   $('#sExp').addEventListener('input', e => { S.exp = e.target.value / 100; model.setExplode(S.exp); $('#vExp').textContent = e.target.value + ' %'; syncExp(); if (S.exp > 0.02) stopAuto(); });
   function syncExp() { $('#bExp').classList.toggle('on', S.exp > 0.02 || S.cut > 0.02); }
-  $('#sCut').addEventListener('input', e => { S.cut = e.target.value / 100; cutPlane.constant = S.cut === 0 ? 100 : 0.72 - S.cut * 1.05; $('#vCut').textContent = e.target.value + ' %'; syncExp(); });
+  $('#sCut').addEventListener('input', e => { S.cut = e.target.value / 100; cutPlane.constant = S.cut === 0 ? 100 : 0.72 - S.cut * 1.5; $('#vCut').textContent = e.target.value + ' %'; syncExp(); });
   function rebuild(detail) {
     detailLevel = detail; const ld = $('#loading'); $('#loadTxt').textContent = 'Reconstruyendo la malla…'; ld.classList.remove('done');
     setTimeout(() => { mountModel(detail); renderPanel(); highlightList(); requestAnimationFrame(() => ld.classList.add('done')); }, 60);
