@@ -56,3 +56,23 @@ drenaje A2→A3 · bomba de recirculación en el centro, dentro de la tina.
 4. ¿Hay foto del motorreductor? Si no, se dibuja junto al cople según el manual.
 5. Medidas estimadas (tina ≈ 1.7 m, campana ≈ 0.75 m, ancho ≈ 0.55 m, banda a ≈ 0.9 m del piso): ¿se dejan o hay reales?
 6. Fotos extra opcionales: salida completa, lado B, interior de la campana con la boquilla, motorreductor.
+
+### Respuestas del usuario · parte 1 (croquis)
+
+- **a) Gabinete eléctrico: A1** (lado A, tercio de la entrada).
+- **b) Dossatron + garrafa: B2** (lado B, centro).
+- **c) Flecha motriz con cople y chumacera: B3** (lado B, salida), como en la v1, pero **más corta** (la v1 la saca demasiado)
+  y **con una caja o gabinete de acero inox gris metálico, del mismo color que el túnel, que cubra motor, flecha, cople, etc.**
+- **d) Motorreductor: B3**, dentro de la misma caja.
+- **e) Mangueras de drenaje:** no sabe; cree que la manguera «extra» conectada a la bomba es la del drenaje.
+- **f) «Bomba de recirculación»:** **no va debajo del túnel** y cree que **ese elemento no existe**. Circuito real según el
+  usuario: garrafa blanca → manguera → bomba (Dossatron) → conectada al túnel → boquilla de aspersión; además la bomba tiene
+  otra manguera conectada que no sabe qué es (cree que es el drenaje).
+- No objetó las definiciones del croquis: entrada = extremo de las varillas blancas; lado A = el del gabinete (foto 6).
+- **Pendiente** (dijo que contestará después): varillas blancas (¿4 o 5?, ¿solo entrada?, ¿cuánto asoman?), «ruedas
+  laterales» de la tarea 1101, foto del motorreductor, medidas, fotos extra.
+
+Interpretación para la v2 (se confirma al entregar): quitar la bomba de recirculación del modelo y ligar la tarea anual
+1302 a las chumaceras de la flecha (foto 9) con una nota; la manguera blanca corrugada de drenaje sale del fondo de la tina
+y pasa junto a la Dossatron hacia el piso (fotos 5 y 7); caja inox gris en B3 que cubre motor, reductor, cople y el tramo
+de flecha.
