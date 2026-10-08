@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Túnel de Sanitizado 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="gl" aria-label="Modelo 3D del túnel de sanitizado"></canvas>
+  <div id="labels"></div>
+  <div id="tip"></div>
+  <div id="banner"></div>
+
+  <header id="top">
+    <div class="brand">
+      <div class="brand-mark">T</div>
+      <div class="brand-txt"><b>TÚNEL DE SANITIZADO 01</b><small>OP TS01 · Empaque · Línea Cortes · Modelo 3D</small></div>
+    </div>
+    <nav id="modes" aria-label="Modos">
+      <button data-mode="explorar" class="on"><span>①</span>Explorar</button>
+      <button data-mode="ruta"><span>②</span>Ruta guiada</button>
+      <button data-mode="practica"><span>③</span>Práctica</button>
+      <button data-mode="analisis"><span>④</span>Análisis</button>
+    </nav>
+    <button id="sysToggle" class="ghost" aria-label="Secciones">☰ Secciones</button>
+  </header>
+
+  <aside id="sys">
+    <div class="search"><input id="q" type="search" placeholder="Buscar pieza, tarea o refacción…" autocomplete="off" aria-label="Buscar"><div id="qres"></div></div>
+    <div id="syslist"></div>
+  </aside>
+
+  <section id="dock" aria-label="Controles del modelo">
+    <div class="dock-bar">
+      <div class="dd" id="ddVista">
+        <button class="dbtn" id="bVista" aria-haspopup="menu" aria-expanded="false"><small>Vista</small><span id="vistaLbl">Isométrica</span><i class="car"></i></button>
+        <div class="menu" id="menuVista" role="menu" aria-label="Vistas"></div>
+      </div>
+      <button class="dbtn" id="bRun" title="Simular la operación: banda, rociado y cortinas en movimiento">▶ Operación</button>
+      <button class="dbtn" id="bXray" title="Ver a través de la campana y del gabinete">Rayos X</button>
+      <button class="dbtn" id="bIso" title="Atenuar todo menos lo seleccionado">Aislar</button>
+      <button class="dbtn" id="bDes" title="Vista explosionada de la sección seleccionada">⤢ Despiece</button>
+      <div class="dd" id="ddExp">
+        <button class="dbtn" id="bExp" aria-haspopup="true" aria-expanded="false" title="Explosión general del equipo y corte de la campana">Explosión<i class="car"></i></button>
+        <div class="menu pop" id="menuExp" aria-label="Explosión y corte">
+          <label class="rng"><span>Explosión general <b id="vExp">0 %</b></span><input id="sExp" type="range" min="0" max="100" value="0"></label>
+          <label class="rng"><span>Corte de la campana <b id="vCut">0 %</b></span><input id="sCut" type="range" min="0" max="100" value="0"></label>
+          <p class="note">La explosión separa todos los elementos del centro. El corte oculta la cara frontal de la campana y del gabinete.</p>
+        </div>
+      </div>
+      <span class="sp"></span>
+      <div class="dd more" id="ddMas">
+        <button class="dbtn" id="bMas" aria-haspopup="menu" aria-expanded="false">Más<i class="car"></i></button>
+        <div class="menu right" id="menuMas" role="menu" aria-label="Más opciones"></div>
+      </div>
+    </div>
+    <div id="legend"></div>
+  </section>
+
+  <aside id="panel">
+    <button id="panelToggle" aria-label="Mostrar u ocultar panel">◂</button>
+    <div id="panelBody"></div>
+  </aside>
+
+  <div id="hint">Arrastra para girar · rueda o pellizco para acercar · clic derecho para mover · toca una pieza para seleccionarla</div>
+  <div id="toast" role="status"></div>
+  <div id="loading"><div class="spin"></div><div id="loadTxt">Construyendo modelo 3D…</div></div>
+</div>
+
+<script src="lib/three.min.js"></script>
+<script src="lib/OrbitControls.js"></script>
+<script src="data/taxonomia.js"></script>
+<script src="data/datos.js"></script>
+<script src="data/info.js"></script>
+<script src="js/core.js"></script>
+<script src="js/b_base.js"></script>
+<script src="js/b_transmision.js"></script>
+<script src="js/b_cubierta.js"></script>
+<script src="js/b_mec.js"></script>
+<script src="js/b_gabinete.js"></script>
+<script src="js/model.js"></script>
+<script src="js/despiece.js"></script>
+<script src="js/app.js"></script>
+<script src="js/modes.js"></script>
+</body>
+</html>

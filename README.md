@@ -1,0 +1,35 @@
+# Túnel de Sanitizado 01 (OP TS01) · modelo 3D interactivo
+
+Aplicación web de un solo paquete (HTML + JS, sin servidor) con el modelo 3D del túnel de sanitizado, construida con
+la taxonomía del Excel y las rutinas de mantenimiento. Se abre con `app/index.html`.
+
+## Qué incluye
+
+- **Modelo 3D procedural** (Three.js) con los **74 elementos**: los 66 de la taxonomía del Excel (boquilla Sprea, motorreductor
+  WEG con reductor y solenoide, bomba Dossatron, botonera BM13, transmisión de 35 elementos y gabinete de 15) más 8 piezas
+  que no están en la taxonomía pero aparecen en las rutinas y fotos (campana, cortinas hawaianas, tanque colector, garrafa,
+  mangueras y bomba de recirculación).
+- **Vista desplegable**: un solo botón «Vista» con la lista de vistas (generales y de detalle) en lugar de botones sueltos.
+- **Explorar**: ficha por pieza con tareas, refacciones, fallas, foto y plano del manual; rayos X, aislar, corte, explosión
+  general y **despiece** (en sitio, por separado en tablero y por elemento).
+- **Ruta guiada**: rutinas mensual (15 puntos) y anual (7 puntos) con las claves B, BP, BCF, X y N/A, lecturas del motor
+  (máx. 42 °C, 1.5 A, 220 V), foto de referencia y reporte.
+- **Práctica**: ubicar piezas en el 3D y preguntas generadas con las rutinas y el Excel.
+- **Análisis**: Pareto de las 56 OT, refacciones críticas y mapa de calor sobre el modelo.
+
+## Estructura
+
+```
+app/index.html          página principal
+app/css, app/js         interfaz y modelo (b_*.js construyen cada sección del 3D)
+app/data                taxonomía, rutinas, fallas y refacciones (generados desde el Excel) e info.js (descripciones)
+app/img                 fotos de la rutina mensual e ilustraciones del manual
+tools/build_data.py     regenera app/data y app/img a partir del Excel y los .docx
+```
+
+## Notas
+
+- Las posiciones y medidas se dedujeron de la foto del ensamble general, de las fotos de planta y de los datos de la
+  taxonomía (banda de 330 mm × 2.7 m, sprockets de 12 dientes, chumaceras UCFL205). No hay plano acotado del equipo.
+- Los elementos marcados «No figura en la taxonomía» y los de número de parte pendiente (solenoide, cople mordaza y
+  elemento de buna) se indican en la ficha de cada pieza.
