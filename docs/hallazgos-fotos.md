@@ -1,7 +1,8 @@
 # Hallazgos de las fotos de planta (ayudas visuales de las rutinas)
 
-Las fotos están en `app/img/ref_01.jpg` … `ref_11.jpg` (el número es el orden de las imágenes en
-`REFERENCIA VISUAL MENSUAL (TUNEL DE SANITIZADO 01).docx`). El dibujo de ensamble del Excel es `app/img/x_general.jpg`.
+Las fotos están en `app/img/ref_01.jpg` … `ref_11.jpg` (`ref_NN` = `word/media/imageNN.jpeg` de
+`REFERENCIA VISUAL MENSUAL (TUNEL DE SANITIZADO 01).docx`; ese número no coincide con el orden visual de la página).
+El dibujo de ensamble del Excel es `app/img/x_general.jpg`.
 Regla del proyecto: **la planta real manda sobre la taxonomía** (ver `CLAUDE.md`).
 
 ## Qué muestra cada foto
@@ -29,6 +30,29 @@ Regla del proyecto: **la planta real manda sobre la taxonomía** (ver `CLAUDE.md
 5. **Dossatron**: la v1 la puso en un pedestal propio; en planta va **sujeta al borde de la tina** con abrazadera.
 6. **Cortinas**: la v1 usa 7 tiras angostas en dos hileras; en planta se ven 4–5 tiras anchas (por confirmar).
 7. Faltan: varillas inox en J con cilindro blanco, manguera transparente reforzada, tubo de drenaje con válvula, manguera negra.
-8. La **bomba de recirculación** no aparece en ninguna foto (solo en la rutina anual).
+8. La **bomba de recirculación** no aparece en ninguna foto; solo la nombra la tarea anual 1302 («cambio de rodamientos»),
+   y la ayuda visual anual usa para **todas** sus tareas la foto de la chumacera blanca con el cople (`ref_09`, la flecha
+   señala la chumacera). Posible causa: la tarea habla de las chumaceras de la flecha y no de una bomba. **Por confirmar**;
+   mientras tanto `tools/build_data.py` mapea 1302 a `ref_10` (Dossatron), que no es la foto de la rutina.
 9. Ninguna foto muestra el **motorreductor**; solo existe su dibujo en el manual.
 10. **Lado y extremo** de gabinete, motor y Dossatron: pendiente de confirmar con el usuario.
+
+## Preguntas abiertas (esperando respuesta del usuario)
+
+El modelo **no se modifica** hasta que el usuario conteste. Material enviado: `docs/preguntas-1-croquis.jpg` (croquis de
+zonas y tabla de respuesta) y `docs/preguntas-2-fotos.jpg` (fotos con los puntos numerados).
+
+Definiciones del croquis: **ENTRADA** = extremo de las varillas blancas (foto 8); **SALIDA** = el otro extremo;
+**LADO A** = el del gabinete (foto 6, tomada desde ese lado con la entrada a la izquierda; es la mano derecha de quien
+camina en el sentido de la banda); **LADO B** = el opuesto. Zonas `A1…A3` y `B1…B3` (1 = entrada, 2 = centro, 3 = salida).
+
+Dónde está cada cosa en la v1 (publicada): gabinete A3 · Dossatron + garrafa A1 · motor + cople B3 · manguera de
+drenaje A2→A3 · bomba de recirculación en el centro, dentro de la tina.
+
+1. Zona de a) gabinete, b) Dossatron + garrafa, c) flecha motriz con cople y chumacera, d) motorreductor,
+   e) mangueras de drenaje, f) «bomba de recirculación» (¿bomba aparte, Dossatron o chumaceras de la flecha?).
+2. Varillas blancas: ¿4 o 5?, ¿solo en la entrada?, ¿cuánto asoman?, ¿son las varillas de desgaste de Naylamid?
+3. «Ruedas laterales» (tarea 1101): ¿son los cilindros blancos de las varillas inox en J (punto 14 de la foto 9)?
+4. ¿Hay foto del motorreductor? Si no, se dibuja junto al cople según el manual.
+5. Medidas estimadas (tina ≈ 1.7 m, campana ≈ 0.75 m, ancho ≈ 0.55 m, banda a ≈ 0.9 m del piso): ¿se dejan o hay reales?
+6. Fotos extra opcionales: salida completa, lado B, interior de la campana con la boquilla, motorreductor.
