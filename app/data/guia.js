@@ -79,14 +79,14 @@ window.GUIA = [
 <li>Elige la OT: mensual o anual.</li>
 <li>En cada tarea la cámara va al elemento y el panel dice qué hacer, cada cuánto, cuántos minutos (los de la OT) y muestra la foto de referencia. Si dice <b>Requiere paro</b>, detén la máquina y aplica el bloqueo (LOTO) antes.</li>
 <li>Si la tarea pide lecturas (temperatura, amperaje y voltaje del motor), escríbelas: si alguna sale de rango te avisa.</li>
-<li>Marca la clave: <b>B</b> se realizó y todo bien · <b>BP</b> se realizó pero hay pendientes · <b>BCF</b> se realizó y se corrigió la falla · <b>X</b> no se realizó · <b>N/A</b> no aplica. Con BP, BCF o X es obligatorio escribir la observación.</li>
+<li>Marca <b>✔ Conforme</b>, <b>⚠ Anomalía</b> (escribe antes qué encontraste en <i>Observaciones</i>, es obligatorio) u <b>Omitir</b>.</li>
 <li><b>← Anterior</b> regresa una tarea; <b>Ver foto de referencia</b> muestra u oculta la foto.</li></ol>
 {img:guia_ruta|Una tarea de la ruta guiada}
-<p>Al terminar, el <b>PDF se descarga solo</b> con el número de la OT, la fecha, el técnico, cada tarea con su clave, lecturas, observaciones, pendientes y espacio para firmas. Su nombre dice la OT, la fecha y el técnico, por ejemplo <i>OT_mensual_2026-10-09_Jose_Carlos.pdf</i>. Ese archivo es el que se sube a Proteus o se imprime.</p>`
+<p>Al terminar, el <b>PDF se descarga solo</b> con el número de la OT, la fecha, el técnico, cada tarea con su resultado (Conforme, Anomalía u Omitido), lecturas, observaciones, anomalías y espacio para firmas. Su nombre dice la OT, la fecha y el técnico, por ejemplo <i>OT_mensual_2026-10-09_Jose_Carlos.pdf</i>. Ese archivo es el que se sube a Proteus o se imprime.</p>`
   },
   {
     t: 'Historial de OT',
-    html: `<p>Arriba, presiona <b>③ Historial</b>. Ahí quedan todas las OT que se terminaron en <b>② Ruta guiada</b> en ese equipo, con todas sus tareas, de la más reciente a la más antigua. Una OT se guarda cuando todas sus tareas tienen clave; si empezaste a media OT (por ejemplo desde la pestaña Tareas de un elemento), la ruta te lleva a las tareas que falten antes de guardar.</p>
+    html: `<p>Arriba, presiona <b>③ Historial</b>. Ahí quedan todas las OT que se terminaron en <b>② Ruta guiada</b> en ese equipo, con todas sus tareas, de la más reciente a la más antigua. Una OT se guarda cuando todas sus tareas están contestadas; si empezaste a media OT (por ejemplo desde la pestaña Tareas de un elemento), la ruta te lleva a las tareas que falten antes de guardar.</p>
 {img:guia_historial|Historial con filtros}
 <ul><li><b>Filtros:</b> por técnico, por OT (mensual o anual) y por fechas (desde / hasta).</li>
 <li><b>Ver:</b> abre el detalle de una OT, tarea por tarea (con <b>← Volver al historial</b> regresas a la lista).</li>

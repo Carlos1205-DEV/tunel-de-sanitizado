@@ -49,7 +49,7 @@ Si falta algo, sigue con lo que sí se puede y anota lo pendiente en `ESTADO.md`
 
 - `app/data/info.js`: descripción de cada elemento (en lenguaje de planta), `foto`, `plano`, `aprox: 1` si no sale en ninguna foto y `xray: 1` si queda tapado.
 - `app/js/app.js`: textos con el nombre de la máquina, `VIEWS` (cámaras), recorrido por secciones y el **prefijo de localStorage** (`ts01_` → ej. `reb02_`; también en `modes.js`: `ts01_hist`, `ts01_pin`, `ts01_tecnico`, `ts01_calidad`).
-- `app/js/modes.js`: claves de la rutina (`CLAVES`), lecturas (`needsReading`, `evalReading`) y nombre del equipo en el PDF (`EQUIPO`, `LUGAR`).
+- `app/js/modes.js`: respuestas (`EST`: Conforme / Anomalía / Omitido), lecturas (`needsReading`, `evalReading`) y nombre del equipo en el PDF (`EQUIPO`, `LUGAR`).
 - `app/index.html`: título, encabezado en dos renglones y nombre en la pantalla de carga. `tools/empaquetar.js`: nombre del archivo de `dist/`.
 
 ## 6. Guía

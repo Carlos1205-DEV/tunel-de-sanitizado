@@ -36,7 +36,7 @@ Este repositorio es la app 3D interactiva del **Túnel de Sanitizado 01 · OP TS
 4. **Medidas y lugares que no se conocen se preguntan** o se marcan como «por confirmar» en `ESTADO.md` y como «Aproximado» en la ficha. No las presentes como hechos.
 5. **Modos de la app** (ya decididos, no cambiarlos sin que él lo pida): ① Explorar · ② Ruta guiada · ③ Historial · ④ Análisis · ? Guía. El modo *Práctica* se quitó a petición de su asesor; no lo vuelvas a poner.
 6. **Encabezado en dos renglones**: arriba `TÚNEL DE SANITIZADO 01 · Planta 2 Querétaro`, abajo `Empaque · Línea Cortes · Modelo 3D · Desarrollado por…`. La barra de modos no debe partirse en dos renglones a 1024 px.
-7. **Ruta guiada → PDF + historial**: al terminar una OT (todas sus tareas) se descarga sola su PDF (`app/js/pdf.js`, generador propio) y queda en el historial (localStorage). Las claves de cada tarea son las oficiales de la rutina (B, BP, BCF, X, N/A). El Historial tiene filtros (técnico, OT, fechas), Ver, PDF, Exportar a Excel (CSV con BOM) y borrar con **PIN de supervisor** (inicial `2026`) que **siempre baja un respaldo en Excel antes de borrar**.
+7. **Ruta guiada → PDF + historial**: al terminar una OT (todas sus tareas) se descarga sola su PDF (`app/js/pdf.js`, generador propio) y queda en el historial (localStorage). La respuesta de cada tarea es la misma que en las otras máquinas: ✔ Conforme, ⚠ Anomalía (con observación obligatoria) u Omitir; no se usan las claves B/BP/BCF/X/N/A. El Historial tiene filtros (técnico, OT, fechas), Ver, PDF, Exportar a Excel (CSV con BOM) y borrar con **PIN de supervisor** (inicial `2026`) que **siempre baja un respaldo en Excel antes de borrar**.
 8. **Claves de localStorage con prefijo por máquina**: aquí `ts01_hist`, `ts01_pin`, `ts01_tecnico`, `ts01_calidad`. En Chrome todos los archivos abiertos con doble clic comparten almacenamiento, así que otra máquina **debe** usar otro prefijo o se mezclan los historiales.
 9. **Git**: trabaja en la rama que indique la sesión (`claude/ecstatic-hawking-ya9eqm`); commits en español y descriptivos; no abras PR si no lo pide.
 
@@ -59,7 +59,7 @@ Este repositorio es la app 3D interactiva del **Túnel de Sanitizado 01 · OP TS
 | `app/js/b_*.js` + `model.js` | **Modelo 3D procedural** por secciones (`b_base`, `b_transmision`, `b_cubierta`, `b_mec`, `b_gabinete`) y su ensamble | **Sí, se rehace completo** |
 | `app/js/despiece.js` | Motor de despiece (vista explosionada de sección y de elemento) | No |
 | `app/js/app.js` | Interfaz: selección, vistas, panel Explorar, barra de herramientas, calidad, recorrido | Poco: textos y vistas |
-| `app/js/modes.js` | Ruta guiada (tareas de las OT), Historial de OT (filtros, PDF, Excel, PIN) y Análisis | Poco: claves, lecturas y nombre del equipo |
+| `app/js/modes.js` | Ruta guiada (tareas de las OT), Historial de OT (filtros, PDF, Excel, PIN) y Análisis | Poco: lecturas y nombre del equipo |
 | `app/js/pdf.js` | Generador de PDF (Helvetica, tamaño carta) | No |
 | `app/js/guia.js` + `app/data/guia.js` | Guía de uso dentro de la app (10 secciones con imágenes) | Textos e imágenes |
 | `app/data/taxonomia.js`, `datos.js` | Taxonomía, OT con sus tareas, refacciones y fallas (los genera `tools/build_data.py`) | Se regeneran |

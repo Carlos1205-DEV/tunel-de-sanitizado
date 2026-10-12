@@ -168,12 +168,6 @@ h3.sec::after{content:"";flex:1;height:1px;background:var(--line)}
 .field textarea{min-height:56px;resize:vertical}
 .field input.bad{border-color:var(--crit)}
 .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.claves{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0 4px}
-.clave{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 2px;font-size:10px;line-height:1.2;color:var(--ink-soft);text-align:center}
-.clave b{font:700 20px/1 var(--font-head);color:var(--ink)}
-.clave:hover{border-color:var(--amber)}
-.clave.on{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}.clave.on b{color:var(--amber-ink)}
-.clave.B.on{background:var(--ok);border-color:var(--ok)}.clave.X.on{background:var(--crit);border-color:var(--crit);color:#fff}.clave.X.on b{color:#fff}
 .opts{display:grid;gap:7px;margin:10px 0}
 .opt{text-align:left;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:13.5px;font-weight:500}
 .opt:hover{border-color:var(--amber)}

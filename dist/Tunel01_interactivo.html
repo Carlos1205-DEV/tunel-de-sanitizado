@@ -179,12 +179,6 @@ h3.sec::after{content:"";flex:1;height:1px;background:var(--line)}
 .field textarea{min-height:56px;resize:vertical}
 .field input.bad{border-color:var(--crit)}
 .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.claves{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0 4px}
-.clave{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 2px;font-size:10px;line-height:1.2;color:var(--ink-soft);text-align:center}
-.clave b{font:700 20px/1 var(--font-head);color:var(--ink)}
-.clave:hover{border-color:var(--amber)}
-.clave.on{background:var(--amber);border-color:var(--amber);color:var(--amber-ink)}.clave.on b{color:var(--amber-ink)}
-.clave.B.on{background:var(--ok);border-color:var(--ok)}.clave.X.on{background:var(--crit);border-color:var(--crit);color:#fff}.clave.X.on b{color:#fff}
 .opts{display:grid;gap:7px;margin:10px 0}
 .opt{text-align:left;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:11px 12px;font-size:13.5px;font-weight:500}
 .opt:hover{border-color:var(--amber)}
@@ -1670,14 +1664,14 @@ window.GUIA = [
 <li>Elige la OT: mensual o anual.</li>
 <li>En cada tarea la cámara va al elemento y el panel dice qué hacer, cada cuánto, cuántos minutos (los de la OT) y muestra la foto de referencia. Si dice <b>Requiere paro</b>, detén la máquina y aplica el bloqueo (LOTO) antes.</li>
 <li>Si la tarea pide lecturas (temperatura, amperaje y voltaje del motor), escríbelas: si alguna sale de rango te avisa.</li>
-<li>Marca la clave: <b>B</b> se realizó y todo bien · <b>BP</b> se realizó pero hay pendientes · <b>BCF</b> se realizó y se corrigió la falla · <b>X</b> no se realizó · <b>N/A</b> no aplica. Con BP, BCF o X es obligatorio escribir la observación.</li>
+<li>Marca <b>✔ Conforme</b>, <b>⚠ Anomalía</b> (escribe antes qué encontraste en <i>Observaciones</i>, es obligatorio) u <b>Omitir</b>.</li>
 <li><b>← Anterior</b> regresa una tarea; <b>Ver foto de referencia</b> muestra u oculta la foto.</li></ol>
 {img:guia_ruta|Una tarea de la ruta guiada}
-<p>Al terminar, el <b>PDF se descarga solo</b> con el número de la OT, la fecha, el técnico, cada tarea con su clave, lecturas, observaciones, pendientes y espacio para firmas. Su nombre dice la OT, la fecha y el técnico, por ejemplo <i>OT_mensual_2026-10-09_Jose_Carlos.pdf</i>. Ese archivo es el que se sube a Proteus o se imprime.</p>`
+<p>Al terminar, el <b>PDF se descarga solo</b> con el número de la OT, la fecha, el técnico, cada tarea con su resultado (Conforme, Anomalía u Omitido), lecturas, observaciones, anomalías y espacio para firmas. Su nombre dice la OT, la fecha y el técnico, por ejemplo <i>OT_mensual_2026-10-09_Jose_Carlos.pdf</i>. Ese archivo es el que se sube a Proteus o se imprime.</p>`
   },
   {
     t: 'Historial de OT',
-    html: `<p>Arriba, presiona <b>③ Historial</b>. Ahí quedan todas las OT que se terminaron en <b>② Ruta guiada</b> en ese equipo, con todas sus tareas, de la más reciente a la más antigua. Una OT se guarda cuando todas sus tareas tienen clave; si empezaste a media OT (por ejemplo desde la pestaña Tareas de un elemento), la ruta te lleva a las tareas que falten antes de guardar.</p>
+    html: `<p>Arriba, presiona <b>③ Historial</b>. Ahí quedan todas las OT que se terminaron en <b>② Ruta guiada</b> en ese equipo, con todas sus tareas, de la más reciente a la más antigua. Una OT se guarda cuando todas sus tareas están contestadas; si empezaste a media OT (por ejemplo desde la pestaña Tareas de un elemento), la ruta te lleva a las tareas que falten antes de guardar.</p>
 {img:guia_historial|Historial con filtros}
 <ul><li><b>Filtros:</b> por técnico, por OT (mensual o anual) y por fechas (desde / hasta).</li>
 <li><b>Ver:</b> abre el detalle de una OT, tarea por tarea (con <b>← Volver al historial</b> regresas a la lista).</li>
@@ -3861,7 +3855,7 @@ window.GUIA = [
       <div class="chips"><button class="chip" data-act="run">▶ Simular operación</button><button class="chip" data-act="door">Abrir el gabinete</button><button class="chip" data-act="xray">Ver por dentro (rayos X)</button><button class="chip" data-act="explode">Explosionar el equipo</button><button class="chip" data-act="heat" data-h="refs">Mapa de calor de refacciones</button></div>
       <h3 class="sec">Secciones</h3><div class="chips">${TAXO.comps.map(c => `<button class="chip" data-act="comp" data-id="${c.id}" style="border-left:3px solid ${c.color}">${esc(c.name)}</button>`).join('')}</div>
       <h3 class="sec">Aprende</h3>
-      <button class="card click" data-act="mode" data-m="ruta"><b class="t">Ruta guiada</b><small>Haz las tareas de la OT mensual (${DATA.ots[0].items.length}) y de la OT anual (${DATA.ots[1].items.length}) una por una, con las claves B, BP, BCF, X y N/A, ubicando cada una en el 3D.</small></button>
+      <button class="card click" data-act="mode" data-m="ruta"><b class="t">Ruta guiada</b><small>Haz las tareas de la OT mensual (${DATA.ots[0].items.length}) y de la OT anual (${DATA.ots[1].items.length}) una por una, marcando si está conforme o si hay anomalía y ubicando cada una en el 3D.</small></button>
       <button class="card click" data-act="mode" data-m="historial"><b class="t">Historial</b><small>Todas las OT terminadas con sus tareas: filtra por técnico, OT o fechas, baja el PDF de cada una o exporta a Excel.</small></button>
       <button class="card click" data-act="mode" data-m="analisis"><b class="t">Análisis</b><small>Pareto de las ${DATA.fallas.length} OT, refacciones críticas (${crit}) y mapa de calor sobre el modelo.</small></button>
       <button class="card click" data-act="mode" data-m="guia"><b class="t">Guía de uso</b><small>Cómo usar cada botón, hacer las tareas de una OT, sacar el PDF y consultar el historial, con imágenes.</small></button>
@@ -4142,7 +4136,7 @@ window.GUIA = [
 (function () {
   'use strict';
   const TS = window.TS, S = TS.S, ACT = TS.ACT, DATA = TS.DATA, TASKS = TS.TASKS, COMP = TS.COMP, ELEM = TS.ELEM, $ = TS.$, $$ = TS.$$, esc = TS.esc, store = TS.store, clean = TS.clean, sentence = TS.sentence, tag = TS.tag;
-  const CLAVES = [['B', 'Se realizó, todo bien'], ['BP', 'Se realizó, pero hay pendientes'], ['BCF', 'Se realizó, se corrigió la falla'], ['X', 'No se realizó'], ['N/A', 'No aplica']];
+  const EST = { ok: 'Conforme', anom: 'Anomalía', skip: 'Omitido' };           // respuesta de cada tarea (igual que en las otras máquinas)
   const SAFETY = ['Utilizar equipos de protección personal (EPP) según la actividad.', 'Asegurarse de la correcta conexión a tierra y reportar fallos.', 'Verificar si requiere paro del equipo.', 'Aplicar el procedimiento de bloqueo y etiquetado de energías (LOTO) para riesgos eléctricos, neumáticos o mecánicos.', 'Revisar el correcto funcionamiento de las guardas de seguridad mientras la máquina esté operando.'];
   const nameOf = key => key.indexOf('comp:') === 0 ? COMP[key.slice(5)].name : clean(ELEM[key].n);
   const short = s => s.length > 52 ? s.slice(0, 50) + '…' : s;
@@ -4161,13 +4155,13 @@ window.GUIA = [
     if (!isNaN(t) && t > 42) out.push('temperatura mayor de 42 °C'); if (!isNaN(a) && a > 1.5) out.push('amperaje mayor de 1.5 A'); if (!isNaN(v) && (v < 198 || v > 242)) out.push('voltaje fuera de 220 V ±10 %');
     return out;
   }
-  function counts(res) { const c = { B: 0, BP: 0, BCF: 0, X: 0, 'N/A': 0 }; res.forEach(r => { if (r && c[r.clave] !== undefined) c[r.clave]++; }); return c; }
-  function resumenCorto(res) { const c = counts(res); return CLAVES.map(k => k[0] + ' ' + c[k[0]]).join(' · '); }
-  const pendientes = res => res.filter(r => r && (r.clave === 'BP' || r.clave === 'X' || r.alerta));
+  function stats(res) { const c = { ok: 0, anom: 0, skip: 0 }; res.forEach(r => { if (r && c[r.estado] !== undefined) c[r.estado]++; }); return c; }
+  function resumenCorto(res) { const c = stats(res); return `${c.ok} conformes · ${c.anom} anomalías · ${c.skip} omitidos`; }
+  const pendientes = res => res.filter(r => r && r.estado === 'anom');
   const readingText = l => `Temperatura ${l.temp || '—'} °C · Amperaje ${l.amp || '—'} A · Voltaje ${l.volt || '—'} V`;
 
   /* ---------- historial guardado en este equipo (localStorage) ---------- */
-  function migrar() {                                                  // OT guardadas por versiones anteriores (sin id, o con los pasos 1101… de la rutina en vez de la Tarea No. de la OT)
+  function migrar() {                                                  // OT guardadas por versiones anteriores (sin id, con los pasos 1101… de la rutina en vez de la Tarea No., o con las claves B/BP/BCF/X/N/A)
     const h = store.get('ts01_hist', []); let cambio = false;
     h.forEach((x, i) => {
       if (!x.id) { x.id = Date.now() - 1000 * (i + 1); cambio = true; }
@@ -4176,7 +4170,9 @@ window.GUIA = [
       (x.res || []).forEach(r => {
         const t = r && o && o.items.find(it => it.rutina === r.codigo);
         if (t) { r.codigo = t.codigo; r.texto = t.texto; delete r.per; cambio = true; }
+        if (r && r.clave && !r.estado) { r.estado = { B: 'ok', BCF: 'ok', BP: 'anom', X: 'skip', 'N/A': 'skip' }[r.clave] || 'skip'; delete r.clave; cambio = true; }   // las claves B/BP/BCF/X/N/A de versiones anteriores
       });
+      if (x.ok === undefined || x.anom === undefined) { const c = stats(x.res || []); x.ok = c.ok; x.anom = c.anom; cambio = true; }
       if (!x.ficha) x.ficha = '';
     });
     if (cambio) store.set('ts01_hist', h);
@@ -4200,12 +4196,10 @@ window.GUIA = [
   function rutaView() {
     if (!R.fid) {
       return `<div class="p-head"><div class="p-sys">Modo 2</div><div class="p-title">Ruta guiada de tareas</div></div>
-      <div class="p-body"><p class="p-desc">Haz, una por una, las <b>tareas de las órdenes de trabajo (OT)</b> del túnel. Cada tarea te lleva a la pieza en el 3D, muestra la foto de referencia y registra su clave. Al terminar se descarga el reporte en PDF y la OT queda guardada en el historial.</p>
+      <div class="p-body"><p class="p-desc">Haz, una por una, las <b>tareas de las órdenes de trabajo (OT)</b> del túnel. Cada tarea te lleva a la pieza en el 3D, muestra la foto de referencia y registra si está conforme o si hay anomalía. Al terminar se descarga el reporte en PDF y la OT queda guardada en el historial.</p>
       <details class="callout stop" style="margin:10px 0"><summary style="cursor:pointer;font-weight:600">Seguridad antes de empezar</summary><ul style="margin:8px 0 0 18px;line-height:1.55">${SAFETY.map(s => `<li>${esc(s)}</li>`).join('')}</ul></details>
       <label class="field"><span>Nombre del técnico</span><input id="rName" value="${esc(R.name)}" placeholder="Tu nombre" autocomplete="name"></label>
       ${DATA.ots.map(o => `<button class="card click" data-act="rstart" data-id="${o.id}"><b class="t">${esc(o.corto)} · ${esc(o.titulo)}</b><small>${esc(o.orden)} · ${o.items.length} tareas · ~${otMin(o)} min</small></button>`).join('')}
-      <h3 class="sec">Claves de cada tarea</h3>
-      <table class="t">${CLAVES.map(c => `<tr><td><b>${c[0]}</b></td><td>${esc(c[1])}</td></tr>`).join('')}</table>
       <div class="callout" style="margin-top:10px">Cada OT que terminas se guarda en <b>③ Historial</b> (arriba): ahí puedes filtrarlas, volver a bajar su PDF o exportarlas a Excel. <button class="chip" style="margin-left:4px" data-act="mode" data-m="historial">Abrir historial</button></div>
       </div>`;
     }
@@ -4225,20 +4219,20 @@ window.GUIA = [
         <label class="field"><span>Temperatura (°C) · máx 42</span><input id="rTemp" inputmode="decimal" value="${esc(lec.temp || '')}" placeholder="°C"></label>
         <label class="field"><span>Amperaje (A) · máx 1.5</span><input id="rAmp" inputmode="decimal" value="${esc(lec.amp || '')}" placeholder="A"></label>
         <label class="field"><span>Voltaje (V) · 220</span><input id="rVolt" inputmode="decimal" value="${esc(lec.volt || '')}" placeholder="V"></label></div>` : ''}
-      <label class="field"><span>Observaciones (obligatorias con BP, BCF o X)</span><textarea id="rNote" placeholder="Describe lo que encontraste">${esc(prev.nota || '')}</textarea></label>
-      <div class="claves" role="group" aria-label="Clave de la tarea">${CLAVES.map(c => `<button class="clave ${c[0].replace('/', '')}${prev.clave === c[0] ? ' on' : ''}" data-act="rclave" data-c="${c[0]}" title="${esc(c[1])}"><b>${c[0]}</b>${esc(c[1].replace('Se realizó, ', ''))}</button>`).join('')}</div>
+      <label class="field"><span>Observaciones (obligatorio si hay anomalía)</span><textarea id="rNote" placeholder="Describe lo que encontraste">${esc(prev.nota || '')}</textarea></label>
+      <div class="btns"><button class="btn ok" data-act="rans" data-v="ok">✔ Conforme</button><button class="btn warn" data-act="rans" data-v="anom">⚠ Anomalía</button><button class="btn" data-act="rans" data-v="skip">Omitir</button></div>
       <div class="btns"><button class="btn sm" data-act="rprev" ${R.i === 0 ? 'disabled' : ''}>← Anterior</button><button class="btn sm" data-act="rphoto">${R.photo ? 'Ocultar' : 'Ver'} foto de referencia</button><button class="btn sm" data-act="rexit">Salir</button></div>
       ${R.photo && it.foto ? `<img class="photo" src="${TS.imgSrc(it.foto)}" alt="Foto de referencia de la tarea ${esc(it.codigo)}"><p class="note">Ayuda visual de planta (paso ${esc(it.rutina)}).</p>` : ''}
     </div>`;
   }
   function rutaResumen(f, hv, back) {
-    const h = hv || R.rec || { res: R.res }, res = h.res, c = counts(res), ok = c.B + c.BCF, pend = pendientes(res);
-    return `<div class="p-head"><div class="p-sys">${esc(f.corto || f.titulo)} · ${esc(f.orden || h.orden || '')}${h.iso ? ' · ' + esc(fechaTxt(h)) : ''}</div><div class="score">${Math.round(ok / (res.length || 1) * 100)}%</div><div class="note">${esc(resumenCorto(res))}${h.nombre ? ' · ' + esc(h.nombre) : ''}</div></div>
+    const h = hv || R.rec || { res: R.res }, res = h.res, c = stats(res), an = pendientes(res), pct = Math.round(c.ok / (res.length || 1) * 100);
+    return `<div class="p-head"><div class="p-sys">${esc(f.corto || f.titulo)} · ${esc(f.orden || h.orden || '')}${h.iso ? ' · ' + esc(fechaTxt(h)) : ''}</div><div class="score">${pct}%</div><div class="note">${c.ok} conformes · ${c.anom} anomalías · ${c.skip} omitidos${h.nombre ? ' · ' + esc(h.nombre) : ''}</div></div>
     <div class="p-body">
-      <div class="btns" style="margin-top:0"><button class="btn pri" data-act="hpdf" data-id="${h.id || ''}">Descargar PDF</button><button class="btn" data-act="rcopy" data-id="${h.id || ''}">Copiar reporte</button>${back ? `<button class="btn" data-act="${back}">← Volver al historial</button>` : '<button class="btn" data-act="rexit">Otra OT</button>'}</div>
-      ${pend.length ? `<h3 class="sec">Pendientes para seguimiento</h3>${pend.map(r => `<div class="row"><div class="top"><b>${esc(sentence(r.texto))}</b>${tag(r.clave, r.clave === 'X' ? 'crit' : 'media')}</div><div class="sub">Tarea No. ${esc(r.codigo)}</div>${r.nota ? `<div class="sub">${esc(r.nota)}</div>` : ''}${r.alerta ? `<div class="sub" style="color:var(--crit)">Lectura fuera de rango: ${esc(r.alerta)}</div>` : ''}${r.puntos && r.puntos[0] && r.puntos[0] !== 'ALL' ? `<button class="chip" style="margin-top:6px" data-act="rfly" data-k="${r.puntos[0]}">Ver pieza</button> <button class="chip" style="margin-top:6px" data-act="rexplore" data-k="${r.puntos[0]}">Historial y refacciones</button>` : ''}</div>`).join('')}` : '<div class="callout" style="margin:12px 0">Sin pendientes. Buen trabajo.</div>'}
-      <h3 class="sec">Tareas de la OT</h3>
-      <table class="t">${res.map(r => r ? `<tr><td>${esc(r.codigo)}</td><td>${esc(sentence(r.texto))}${r.lec ? `<br><span class="note">${esc(readingText(r.lec))}</span>` : ''}${r.nota && r.clave === 'B' ? `<br><span class="note">${esc(r.nota)}</span>` : ''}</td><td><b>${esc(r.clave)}</b></td></tr>` : '').join('')}</table>
+      <div class="btns" style="margin-top:0"><button class="btn pri" data-act="hpdf" data-id="${h.id || ''}">Descargar PDF</button><button class="btn" data-act="rcopy" data-id="${h.id || ''}">Copiar reporte</button>${back ? `<button class="btn" data-act="${back}">← Volver al historial</button>` : '<button class="btn" data-act="rexit">Volver</button><button class="btn" data-act="mode" data-m="historial">Ver historial</button>'}</div>
+      ${an.length ? `<h3 class="sec">Anomalías para seguimiento</h3>${an.map(r => `<div class="row"><b>${esc(sentence(r.texto))}</b><div class="sub">Tarea No. ${esc(r.codigo)}</div>${r.nota ? `<div class="sub">${esc(r.nota)}</div>` : ''}${r.alerta ? `<div class="sub" style="color:var(--crit)">Lectura fuera de rango: ${esc(r.alerta)}</div>` : ''}${r.puntos && r.puntos[0] && r.puntos[0] !== 'ALL' ? `<button class="chip" style="margin-top:6px" data-act="rfly" data-k="${r.puntos[0]}">Ver pieza</button> <button class="chip" style="margin-top:6px" data-act="rexplore" data-k="${r.puntos[0]}">Historial y refacciones</button>` : ''}</div>`).join('')}` : '<div class="callout">Sin anomalías. Buen trabajo.</div>'}
+      <h3 class="sec">Detalle</h3>
+      <table class="t">${res.map(r => r ? `<tr><td>${esc(r.codigo)}</td><td>${esc(sentence(r.texto))}${r.lec ? `<br><span class="note">${esc(readingText(r.lec))}</span>` : ''}${r.nota && r.estado !== 'anom' ? `<br><span class="note">${esc(r.nota)}</span>` : ''}</td><td>${r.estado === 'ok' ? '✔' : r.estado === 'anom' ? '⚠' : '—'}</td></tr>` : '').join('')}</table>
     </div>`;
   }
   function rutaGo() {
@@ -4254,35 +4248,35 @@ window.GUIA = [
     const nm = $('#rName'); if (nm) { R.name = nm.value.trim(); store.set('ts01_tecnico', R.name); }
     R.fid = d.id; R.i = 0; R.res = []; R.done = false; R.rec = null; R.t0 = new Date(); R.photo = true; TS.stopAuto(); TS.renderPanel(); rutaGo();
   };
-  ACT.rclave = d => {
-    const f = otOf(R.fid), it = f.items[R.i], dr = readDraft(), c = d.c;
-    if (['BP', 'BCF', 'X'].includes(c) && !dr.nota) { TS.toast('Escribe la observación para la clave ' + c); const n = $('#rNote'); if (n) n.focus(); return; }
-    let alerta = ''; if (dr.lec) { const out = evalReading(dr.lec); alerta = out.join(', '); if (out.length && c === 'B') { TS.toast('Hay una lectura fuera de rango: usa BP o BCF y anótalo'); ['rTemp', 'rAmp', 'rVolt'].forEach(id => $('#' + id) && $('#' + id).classList.add('bad')); return; } }
-    R.res[R.i] = { codigo: it.codigo, min: it.min, texto: it.texto, clave: c, nota: dr.nota, lec: dr.lec, alerta, puntos: it.puntos };
-    const falta = f.items.findIndex((_, k) => !R.res[k]);               // primera tarea sin clave (si se empezó a media OT, se pide el resto antes de guardar)
+  ACT.rans = d => {
+    const f = otOf(R.fid), it = f.items[R.i], dr = readDraft(), v = d.v;
+    if (v === 'anom' && !dr.nota) { TS.toast('Describe la anomalía en Observaciones'); const n = $('#rNote'); if (n) n.focus(); return; }
+    let alerta = ''; if (dr.lec) { const out = evalReading(dr.lec); alerta = out.join(', '); if (out.length && v === 'ok') { TS.toast('Hay una lectura fuera de rango: marca Anomalía y descríbela'); ['rTemp', 'rAmp', 'rVolt'].forEach(id => $('#' + id) && $('#' + id).classList.add('bad')); return; } }
+    R.res[R.i] = { codigo: it.codigo, min: it.min, texto: it.texto, estado: v, nota: dr.nota, lec: dr.lec, alerta, puntos: it.puntos };
+    const falta = f.items.findIndex((_, k) => !R.res[k]);               // primera tarea sin respuesta (si se empezó a media OT, se pide el resto antes de guardar)
     if (falta === -1) {
       R.done = true; R.rec = saveReport(f); TS.setFocus(null, { fly: false }); TS.setView('iso'); TS.renderPanel();
       descargarPDF(R.rec, true);                                       // el PDF de cada OT se genera solo al terminar
     }
-    else { if (falta !== R.i + 1) TS.toast('Aún falta la tarea ' + (falta + 1) + ' de ' + f.items.length + ': la OT se guarda cuando todas tienen clave'); R.i = falta; TS.renderPanel(); rutaGo(); }
+    else { if (falta !== R.i + 1) TS.toast('Aún falta la tarea ' + (falta + 1) + ' de ' + f.items.length + ': la OT se guarda cuando todas están contestadas'); R.i = falta; TS.renderPanel(); rutaGo(); }
   };
   ACT.rprev = () => { if (R.i > 0) { R.i--; TS.renderPanel(); rutaGo(); } };
-  ACT.rphoto = () => { const keep = readDraft(); const cur = R.res[R.i] || {}; R.res[R.i] = Object.assign(cur, { nota: keep.nota, lec: keep.lec || cur.lec, clave: cur.clave }); R.photo = !R.photo; TS.renderPanel(true); if (!cur.clave) delete R.res[R.i]; };
+  ACT.rphoto = () => { const keep = readDraft(); const cur = R.res[R.i] || {}; R.res[R.i] = Object.assign(cur, { nota: keep.nota, lec: keep.lec || cur.lec, estado: cur.estado }); R.photo = !R.photo; TS.renderPanel(true); if (!cur.estado) delete R.res[R.i]; };
   ACT.rexit = () => { R.fid = null; R.done = false; R.rec = null; TS.setFocus(null, { fly: false }); TS.setView('iso'); TS.renderPanel(); };
   ACT.rfly = d => { if (d.k === 'ALL') { TS.setFocus(null, { fly: false }); TS.setView('iso'); } else TS.focusKeys([d.k]); };
   ACT.rexplore = d => { TS.setMode('explorar'); const k = d.k; if (k.indexOf('comp:') === 0) TS.select({ kind: 'comp', id: k.slice(5) }, { tab: 'fallas' }); else TS.select({ kind: 'elem', id: k }, { tab: 'fallas' }); };
   function saveReport(f) {
     const hist = histAll(), now = new Date();
-    const rec = { id: now.getTime(), iso: now.toISOString(), inicio: R.t0 ? R.t0.toISOString() : null, ficha: f.corto, titulo: f.titulo, orden: f.orden, fid: f.id, nombre: R.name, total: f.items.length, res: R.res.slice() };
+    const rec = { id: now.getTime(), iso: now.toISOString(), inicio: R.t0 ? R.t0.toISOString() : null, ficha: f.corto, titulo: f.titulo, orden: f.orden, fid: f.id, nombre: R.name, total: f.items.length, ok: stats(R.res).ok, anom: stats(R.res).anom, res: R.res.slice() };
     hist.unshift(rec);
     store.set('ts01_hist', hist);                                      // sin límite: se conservan todas las OT
     return rec;
   }
   const recDe = id => (id && histAll().find(x => String(x.id) === String(id))) || R.rec;
   function reportText(h) {
-    const o = otOf(h.fid) || { corto: h.ficha, titulo: h.titulo || '', orden: h.orden || '' };
-    let s = `REPORTE DE OT — ${EQUIPO.toUpperCase()} · ${LUGAR}\nOrden No.: ${o.orden}\nDescripción: ${o.titulo}\nFecha: ${fechaTxt(h)}\nTécnico: ${h.nombre || '—'}\nResultado: ${resumenCorto(h.res)}\n\n`;
-    h.res.forEach(r => { if (!r) return; s += `Tarea ${r.codigo} [${r.clave}] ${sentence(r.texto)}${r.lec ? ' | ' + readingText(r.lec) : ''}${r.alerta ? ' | FUERA DE RANGO: ' + r.alerta : ''}${r.nota ? ' | Obs: ' + r.nota : ''}\n`; });
+    const o = otOf(h.fid) || { corto: h.ficha, titulo: h.titulo || '', orden: h.orden || '' }, c = stats(h.res);
+    let s = `REPORTE DE OT — ${EQUIPO.toUpperCase()} · ${LUGAR}\nOrden No.: ${o.orden}\nDescripción: ${o.titulo}\nFecha: ${fechaTxt(h)}\nTécnico: ${h.nombre || '—'}\nConformes: ${c.ok}/${h.res.length} · Anomalías: ${c.anom} · Omitidos: ${c.skip}\n\n`;
+    h.res.forEach((r, i) => { if (!r) return; s += `${i + 1}. [${(EST[r.estado] || '').toUpperCase()}] ${r.codigo} — ${sentence(r.texto)}${r.lec ? ' | ' + readingText(r.lec) : ''}${r.alerta ? ' | FUERA DE RANGO: ' + r.alerta : ''}${r.nota ? ' | Nota: ' + r.nota : ''}\n`; });
     return s;
   }
   function copyText(txt, ok) {
@@ -4312,7 +4306,7 @@ window.GUIA = [
           <label class="field"><span>Hasta</span><input type="date" data-hf="hasta" value="${esc(R.f.hasta)}"></label>
         </div>
         <div class="btns"><button class="btn" data-act="hxls" ${list.length ? '' : 'disabled style="opacity:.4"'}>Exportar a Excel (${list.length})</button>${hayFiltro() ? '<button class="btn sm" data-act="hclear">Quitar filtros</button>' : ''}</div>
-        ${list.length ? list.slice(0, 60).map(h => { const p = pendientes(h.res).length; return `<div class="card hrow"><div><b class="t" style="font-size:16px">${esc(h.ficha)}</b><small>${esc(h.orden || '')} · ${h.res.length} tareas</small><small>${esc(resumenCorto(h.res))}</small><small>${esc(fechaTxt(h))} · ${esc(h.nombre || 'Sin nombre')}${p ? ` · <span style="color:var(--crit)">${p} pendiente${p > 1 ? 's' : ''}</span>` : ''}</small></div>
+        ${list.length ? list.slice(0, 60).map(h => { const c = stats(h.res); return `<div class="card hrow"><div><b class="t" style="font-size:16px">${esc(h.ficha)} · ${c.ok}/${h.res.length} conformes</b><small>${esc(h.orden || '')}</small><small>${esc(fechaTxt(h))} · ${esc(h.nombre || 'Sin nombre')}${c.anom ? ` · <span style="color:var(--crit)">${c.anom} anomalía${c.anom > 1 ? 's' : ''}</span>` : ''}</small></div>
           <div class="btns" style="margin:6px 0 0"><button class="btn sm" data-act="rhist" data-id="${h.id}">Ver</button><button class="btn sm pri" data-act="hpdf" data-id="${h.id}">PDF</button><button class="btn sm" data-act="hdel" data-id="${h.id}" title="Borrar esta OT" aria-label="Borrar esta OT" style="margin-left:auto">🗑</button></div></div>`; }).join('') + (list.length > 60 ? `<p class="note">Se muestran las 60 más recientes de ${list.length}. Usa los filtros o exporta a Excel para ver todas.</p>` : '')
           : '<div class="empty">Ninguna OT coincide con los filtros.</div>'}`
         : '<div class="empty">Aún no hay OT terminadas. Haz las tareas de una OT en ② Ruta guiada y aparecerá aquí.</div>'}
@@ -4340,10 +4334,10 @@ window.GUIA = [
   }
   const limpio = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
   function exportarCSV(list, nombre, aviso) {
-    const rows = [['Fecha', 'Hora', 'Técnico', 'Orden No.', 'OT', '#', 'Tarea No.', 'Actividad', 'Min', 'Clave', 'Significado', 'Temperatura (°C)', 'Amperaje (A)', 'Voltaje (V)', 'Fuera de rango', 'Observaciones']];
+    const rows = [['Fecha', 'Hora', 'Técnico', 'Orden No.', 'OT', '#', 'Tarea No.', 'Actividad', 'Min', 'Resultado', 'Lectura', 'Fuera de rango', 'Observaciones']];
     list.slice().reverse().forEach(h => {
       const d = h.iso ? new Date(h.iso) : null;
-      h.res.forEach((r, i) => { if (r) rows.push([d ? d.toLocaleDateString('es-MX') : (h.fecha || ''), d ? d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '', h.nombre || '', h.orden || '', h.ficha, i + 1, r.codigo, sentence(r.texto), r.min !== undefined ? r.min : minDe(otOf(h.fid), r.codigo), r.clave, (CLAVES.find(k => k[0] === r.clave) || [])[1] || '', r.lec ? r.lec.temp : '', r.lec ? r.lec.amp : '', r.lec ? r.lec.volt : '', r.alerta || '', r.nota || '']); });
+      h.res.forEach((r, i) => { if (r) rows.push([d ? d.toLocaleDateString('es-MX') : (h.fecha || ''), d ? d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '', h.nombre || '', h.orden || '', h.ficha, i + 1, r.codigo, sentence(r.texto), r.min !== undefined ? r.min : minDe(otOf(h.fid), r.codigo), EST[r.estado] || r.estado, r.lec ? readingText(r.lec) : '', r.alerta || '', r.nota || '']); });
     });
     const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
     if (window.claude) {
@@ -4396,9 +4390,9 @@ window.GUIA = [
   function reportePDF(h) {
     const o = otOf(h.fid) || { corto: h.ficha, titulo: h.titulo || h.ficha, orden: h.orden || '' };
     const doc = PDFMini.create(), M = 40, Wd = doc.W - 2 * M, INK = [0.12, 0.13, 0.15], SOFT = [0.42, 0.45, 0.5], AMB = [0.88, 0.64, 0.23];
-    const COLR = { B: [0.16, 0.55, 0.3], BCF: [0.1, 0.4, 0.7], BP: [0.75, 0.5, 0.05], X: [0.8, 0.18, 0.15], 'N/A': [0.45, 0.47, 0.5] };
-    const cols = [{ t: '#', w: 20 }, { t: 'Tarea No.', w: 100 }, { t: 'Actividad', w: 152 }, { t: 'Min', w: 26 }, { t: 'Clave', w: 32 }, { t: 'Lecturas', w: 72 }, { t: 'Observaciones', w: Wd - 20 - 100 - 152 - 26 - 32 - 72 }];
-    const fecha = h.iso ? new Date(h.iso) : null, c = counts(h.res), ok = c.B + c.BCF;
+    const COLR = { ok: [0.16, 0.55, 0.3], anom: [0.8, 0.18, 0.15], skip: [0.45, 0.47, 0.5] };
+    const cols = [{ t: '#', w: 20 }, { t: 'Tarea No.', w: 100 }, { t: 'Actividad', w: 152 }, { t: 'Min', w: 26 }, { t: 'Resultado', w: 58 }, { t: 'Lectura', w: 70 }, { t: 'Observaciones', w: Wd - 20 - 100 - 152 - 26 - 58 - 70 }];
+    const fecha = h.iso ? new Date(h.iso) : null, c = stats(h.res), ok = c.ok;
     const dur = h.iso && h.inicio ? Math.max(1, Math.round((new Date(h.iso) - new Date(h.inicio)) / 60000)) : 0;
     let y;
     const encabezado = () => {
@@ -4408,14 +4402,14 @@ window.GUIA = [
       doc.line(M, 62, M + Wd, 62, AMB, 1.2);
       y = 76;
     };
-    const filaTabla = (vals, bold, fill, clave) => {
+    const filaTabla = (vals, bold, fill, estado) => {
       const lines = vals.map((v, i) => doc.wrap(v, cols[i].w - 8, bold || i === 4 ? 'bold' : '', 8.5));
       const hgt = Math.max(...lines.map(l => l.length)) * 10.5 + 7;
       if (y + hgt > doc.H - 60) { encabezado(); filaTabla(cols.map(k => k.t), true, [0.92, 0.93, 0.94]); }
       if (fill) doc.rect(M, y, Wd, hgt, fill);
       let x = M;
       lines.forEach((ls, i) => {
-        const color = !bold && i === 4 ? (COLR[clave] || INK) : INK;
+        const color = !bold && i === 4 ? (COLR[estado] || INK) : INK;
         doc.font(bold || i === 4 ? 'bold' : '', 8.5);
         ls.forEach((l, k) => doc.text(l, x + 4, y + 11 + k * 10.5, { color }));
         x += cols[i].w;
@@ -4428,7 +4422,7 @@ window.GUIA = [
     const datos = [['Orden No.', o.orden], ['Descripción', o.titulo], ['Equipo', o.equipo_no ? o.equipo_no + ' · ' + o.equipo : 'OP TS01 · TÚNEL DE SANITIZADO'], ['Tipo / clase', o.tipo ? o.tipo + ' · ' + o.clase : '—'],
       ['Fecha', fecha ? fecha.toLocaleDateString('es-MX', { dateStyle: 'long' }) + ', ' + fecha.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : (h.fecha || '')], ['Técnico', h.nombre || '—']];
     if (dur) datos.push(['Duración', dur + ' min']);
-    datos.push(['Resultado', resumenCorto(h.res) + '  (cumplimiento ' + Math.round(ok / (h.res.length || 1) * 100) + ' %)']);
+    datos.push(['Resultado', resumenCorto(h.res) + '  (' + Math.round(ok / (h.res.length || 1) * 100) + ' % conformes)']);
     doc.rect(M, y, Wd, datos.length * 16 + 10, [0.96, 0.96, 0.97], [0.85, 0.86, 0.88]);
     datos.forEach((d, i) => { doc.font('bold', 9.5).text(d[0] + ':', M + 10, y + 18 + i * 16, { color: SOFT }); doc.font('', 9.5).text(d[1], M + 100, y + 18 + i * 16, { color: INK }); });
     y += datos.length * 16 + 26;
@@ -4437,21 +4431,18 @@ window.GUIA = [
     h.res.forEach((r, i) => {
       if (!r) return;
       const lec = r.lec ? `Temp. ${r.lec.temp || '—'} °C\nAmp. ${r.lec.amp || '—'} A\nVolt. ${r.lec.volt || '—'} V` : '';
-      filaTabla([String(i + 1), r.codigo, sentence(r.texto), r.min !== undefined ? String(r.min) : (minDe(o, r.codigo) || ''), r.clave, lec, (r.alerta ? 'FUERA DE RANGO: ' + r.alerta + '. ' : '') + (r.nota || '')], false, null, r.clave);
+      filaTabla([String(i + 1), r.codigo, sentence(r.texto), r.min !== undefined ? String(r.min) : (minDe(o, r.codigo) || ''), EST[r.estado] || r.estado, lec, (r.alerta ? 'FUERA DE RANGO: ' + r.alerta + '. ' : '') + (r.nota || '')], false, null, r.estado);
     });
     const pend = pendientes(h.res);
     if (pend.length) {
       y += 18; if (y > doc.H - 120) encabezado();
-      doc.font('bold', 11).text('Pendientes para seguimiento', M, y, { color: COLR.X }); y += 6;
+      doc.font('bold', 11).text('Anomalías para seguimiento', M, y, { color: COLR.anom }); y += 6;
       pend.forEach(r => {
-        const ls = doc.wrap('• [' + r.clave + '] ' + r.codigo + ' · ' + sentence(r.texto) + (r.nota ? ' — ' + r.nota : '') + (r.alerta ? ' — Lectura fuera de rango: ' + r.alerta : ''), Wd - 10, '', 9.5);
+        const ls = doc.wrap('• ' + r.codigo + ' · ' + sentence(r.texto) + (r.nota ? ' — ' + r.nota : '') + (r.alerta ? ' — Lectura fuera de rango: ' + r.alerta : ''), Wd - 10, '', 9.5);
         if (y + ls.length * 12 + 6 > doc.H - 60) encabezado();
         doc.font('', 9.5); ls.forEach(l => { y += 12; doc.text(l, M + 6, y, { color: INK }); }); y += 4;
       });
     }
-    // claves
-    y += 12; if (y > doc.H - 90) encabezado();
-    doc.font('', 8).wrap('Claves: ' + CLAVES.map(k => k[0] + ' = ' + k[1]).join(' · '), Wd, '', 8).forEach(l => { y += 10; doc.text(l, M, y, { color: SOFT }); });
     // firmas
     y += 36; if (y > doc.H - 54) { encabezado(); y += 40; }
     [['Realizó', h.nombre || ''], ['Revisó / supervisor', '']].forEach((s, i) => {

@@ -17,7 +17,7 @@ Desarrollado por Jose Carlos Trejo Espinosa · 2026. Usa la misma base que el Ex
 - **Explorar**: ficha por pieza con tareas, refacciones, fallas, foto y plano del manual; rayos X, aislar, corte, explosión
   general y **despiece** (en sitio, por separado en tablero y por elemento).
 - **Tareas**: las de las dos **OT maestras** (PDF): mensual `OP-TS01-INSP-GRAL-EO-1M` (15 tareas) y anual `OP-TS01-PREV-MEC/ELEC-EP-1A` (7 tareas), con su «Tarea No.» (TS01-INSP-MEC-01…).
-- **Ruta guiada**: recorre las tareas de la OT que elijas con las claves B, BP, BCF, X y N/A, lecturas del motor
+- **Ruta guiada**: recorre las tareas de la OT que elijas (✔ Conforme, ⚠ Anomalía u Omitir), lecturas del motor
   (máx. 42 °C, 1.5 A, 220 V), foto de referencia. Al terminar se descarga sola el **reporte en PDF** de la OT.
 - **Historial**: todas las OT terminadas, con filtros (técnico, OT, fechas), PDF de cada una, exportar a Excel y
   borrado con PIN de supervisor (inicial `2026`; antes de borrar baja un respaldo en Excel). Se guarda en el navegador de cada equipo.
