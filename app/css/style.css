@@ -255,7 +255,7 @@ table.t td,table.t th{padding:6px 4px;border-bottom:1px solid var(--line);text-a
 .lb-x{position:absolute;top:14px;right:18px;color:#fff;font-size:14px;font-weight:600;background:#0008;padding:6px 12px;border-radius:16px}
 
 /* ---------- tablet y celular ---------- */
-@media (max-width:1100px){:root{--panel-w:340px;--sys-w:220px}}
+@media (max-width:1100px){:root{--panel-w:340px;--sys-w:220px}.brand-txt .det{display:none}}   /* a 1024 px el crédito del autor siempre se ve completo */
 @media (max-width:900px){
   :root{--top:calc(50px + env(safe-area-inset-top,0px))}
   .brand-txt small{display:none}

@@ -266,7 +266,7 @@ table.t td,table.t th{padding:6px 4px;border-bottom:1px solid var(--line);text-a
 .lb-x{position:absolute;top:14px;right:18px;color:#fff;font-size:14px;font-weight:600;background:#0008;padding:6px 12px;border-radius:16px}
 
 /* ---------- tablet y celular ---------- */
-@media (max-width:1100px){:root{--panel-w:340px;--sys-w:220px}}
+@media (max-width:1100px){:root{--panel-w:340px;--sys-w:220px}.brand-txt .det{display:none}}   /* a 1024 px el crédito del autor siempre se ve completo */
 @media (max-width:900px){
   :root{--top:calc(50px + env(safe-area-inset-top,0px))}
   .brand-txt small{display:none}
@@ -308,7 +308,7 @@ table.t td,table.t th{padding:6px 4px;border-bottom:1px solid var(--line);text-a
   <header id="top">
     <div class="brand">
       <div class="brand-mark">T</div>
-      <div class="brand-txt"><b>TÚNEL DE SANITIZADO 01 <span class="planta">· Planta 2 Querétaro</span></b><small>Empaque · Línea Cortes · Modelo 3D · <span class="autor">Desarrollado por Jose Carlos Trejo Espinosa · 2026</span></small></div>
+      <div class="brand-txt"><b>TÚNEL DE SANITIZADO 01 <span class="planta">· Planta 2 Querétaro</span></b><small><span class="det">Empaque · Línea Cortes · Modelo 3D · </span><span class="autor">Desarrollado por Jose Carlos Trejo Espinosa · 2026</span></small></div>
     </div>
     <nav id="modes" aria-label="Modos">
       <button data-mode="explorar" class="on"><span>①</span>Explorar</button>
