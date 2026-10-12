@@ -100,3 +100,30 @@ de flecha.
 | Dossatron | B2, abrazada al borde de la tina, te de PVC gris, tubo azul de succión a la garrafa, manguera transparente reforzada al niple de la tina, manguera crema de drenaje, clavija negra | 7, 10 |
 | Bomba de recirculación | Eliminada; la tarea 1302 se enlaza a las chumaceras con una nota «por confirmar» | respuesta f |
 | Aproximado | Boquilla, motorreductor, flecha intermedia, 2.º cople, rodillos de retorno, solenoide del túnel, variador, fuente y relevadores | no salen en fotos |
+
+## Tareas: las OT maestras (aclaración del usuario)
+
+Las **tareas del túnel** son las de las dos órdenes de trabajo maestras en PDF (`OT TUNEL DE SANITIZADO 01 MENSUAL EQUIPO OPERANDO.pdf` y `… ANUAL EQUIPO PARADO.pdf`), con su «Tarea No.» (TS01-…). Los pasos numerados de las rutinas (.docx) y de las ayudas visuales (1101, 1302…) **no** son las tareas: solo sirven para ligar cada foto con su tarea. Equivalencias (por texto, 22 de 22 coinciden):
+
+| Paso de la ayuda visual | Tarea No. (OT) | Foto |
+|---|---|---|
+| 1101 | TS01-INSP-MEC-01 | `ref_08` |
+| 1102 | TS01-INSP-MEC-02 | `ref_11` |
+| 1103 | TS01-INSP-MEC-03 | `ref_09` |
+| 1104 | TS01-INSP-MEC-04 | `ref_01` |
+| 1105 | TS01-INSP-MEC-05 | `ref_07` |
+| 1106 | TS01-INSP-MEC-06 | `ref_08` |
+| 1107 | TS01-INSP-MEC-07 | `ref_09` |
+| 1108 | TS01-INSP-MEC-08 | `ref_11` |
+| 1109 | TS01-INSP-MEC-09 | `ref_10` |
+| 1301 | TS01-PREV-MEC-01 | `ref_09` |
+| 3101 | TS01-INSP-ELEC-01 | `ref_03` |
+| 3201 | TS01-PRED-ELEC-01 | `ref_09` |
+| 3302 | TS01-PREV-ELEC-02 | `ref_04` |
+| 7101 | TS01-INSP-GRAL-01 | `ref_06` |
+| 7102 | TS01-INSP-GRAL-02 | `ref_05` |
+| 3301 | TS01-PREV-ELEC-01 | `ref_04` |
+| 1302 a 1306 | TS01-PREV-MEC-02 a 06 | `ref_a1` |
+| 1307 | TS01-PREV-MEC-07 | `ref_a1` |
+
+Ojo con las dos fotos que se repiten (`ref_09` en tres tareas, `ref_a1` en todas las anuales): son las que trae la ayuda visual.

@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Layout general, piso y biblioteca de piezas reutilizables (chumaceras, sprockets, acoplamientos, mangueras).
  * Referencia: fotos de planta de las rutinas (docs/hallazgos-fotos.md) y respuestas del usuario sobre dónde va cada sistema.
  * La taxonomía del Excel solo aporta nombres, cantidades y medidas de las piezas; la forma y el lugar salen de las fotos. */

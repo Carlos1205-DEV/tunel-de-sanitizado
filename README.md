@@ -1,7 +1,9 @@
 # Túnel de Sanitizado 01 (OP TS01) · modelo 3D interactivo
 
-Aplicación web de un solo paquete (HTML + JS, sin servidor) con el modelo 3D del túnel de sanitizado, construida con
-la taxonomía del Excel y las rutinas de mantenimiento. Se abre con `app/index.html`.
+Aplicación web (HTML + JS, sin servidor ni internet) con el modelo 3D del túnel de sanitizado, construida con
+la taxonomía del Excel y las rutinas de mantenimiento. Se abre con `app/index.html` o, en **un solo archivo**,
+con `dist/Tunel01_interactivo.html` (se arma con `node tools/empaquetar.js`).
+Desarrollado por Jose Carlos Trejo Espinosa · 2026. Usa la misma base que el Extrusor 01 y el Cheese Former.
 
 ## Qué incluye
 
@@ -14,19 +16,26 @@ la taxonomía del Excel y las rutinas de mantenimiento. Se abre con `app/index.h
 - **Vista desplegable**: un solo botón «Vista» con la lista de vistas (generales y de detalle) en lugar de botones sueltos.
 - **Explorar**: ficha por pieza con tareas, refacciones, fallas, foto y plano del manual; rayos X, aislar, corte, explosión
   general y **despiece** (en sitio, por separado en tablero y por elemento).
-- **Ruta guiada**: rutinas mensual (15 puntos) y anual (7 puntos) con las claves B, BP, BCF, X y N/A, lecturas del motor
-  (máx. 42 °C, 1.5 A, 220 V), foto de referencia y reporte.
-- **Práctica**: ubicar piezas en el 3D y preguntas generadas con las rutinas y el Excel.
+- **Tareas**: las de las dos **OT maestras** (PDF): mensual `OP-TS01-INSP-GRAL-EO-1M` (15 tareas) y anual `OP-TS01-PREV-MEC/ELEC-EP-1A` (7 tareas), con su «Tarea No.» (TS01-INSP-MEC-01…).
+- **Ruta guiada**: recorre las tareas de la OT que elijas con las claves B, BP, BCF, X y N/A, lecturas del motor
+  (máx. 42 °C, 1.5 A, 220 V), foto de referencia. Al terminar se descarga sola el **reporte en PDF** de la OT.
+- **Historial**: todas las OT terminadas, con filtros (técnico, OT, fechas), PDF de cada una, exportar a Excel y
+  borrado con PIN de supervisor (inicial `2026`; antes de borrar baja un respaldo en Excel). Se guarda en el navegador de cada equipo.
 - **Análisis**: Pareto de las 56 OT, refacciones críticas y mapa de calor sobre el modelo.
+- **Guía de uso** dentro de la app, con imágenes, y **calidad gráfica** Ultra / Alta / Media / Baja (menú *Más*).
 
 ## Estructura
 
 ```
 app/index.html          página principal
-app/css, app/js         interfaz y modelo (b_*.js construyen cada sección del 3D)
+app/css, app/js         interfaz y modelo (b_*.js construyen cada sección del 3D; modes.js = ruta, historial y análisis; pdf.js = reportes)
 app/data                taxonomía, rutinas, fallas y refacciones (generados desde el Excel) e info.js (descripciones)
 app/img                 fotos de la rutina mensual e ilustraciones del manual
-tools/build_data.py     regenera app/data y app/img a partir del Excel y los .docx
+OT *.pdf               las dos órdenes de trabajo maestras (mensual y anual): las tareas del túnel
+tools/build_data.py     regenera app/data y app/img a partir de las OT (PDF), el Excel y los .docx
+tools/empaquetar.js     arma dist/Tunel01_interactivo.html (un solo archivo con todo adentro)
+tools/capturas_guia.js  regenera las imágenes de la guía (app/img/guia_*.jpg) con Playwright
+ESTADO.md               qué está terminado y qué falta confirmar en planta
 ```
 
 ## Distribución (confirmada con el personal de planta)

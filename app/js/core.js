@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Núcleo geométrico del modelo 3D — TÚNEL DE SANITIZADO 01 (OP TS01)
  * Unidades: metros.  X = sentido de la banda (entrada con las varillas blancas en -X, salida en +X).
  * Y = altura.  Z = profundidad: LADO A en +Z (el del gabinete, foto 6) y LADO B en -Z (bomba Dossatron y caja del motorreductor).

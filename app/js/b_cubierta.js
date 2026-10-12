@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* CAMPANA, CORTINAS, TINA, MANGUERAS, GARRAFA Y CAJA DEL MOTORREDUCTOR.
  * Son piezas que no figuran en la taxonomía del Excel pero salen en las rutinas y en las fotos de planta.
  * Referencia: fotos 1, 5, 6, 7, 9, 10 y 11 de la rutina mensual y las respuestas del usuario (gabinete A1, Dossatron B2, motor B3). */

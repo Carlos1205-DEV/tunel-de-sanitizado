@@ -1,5 +1,6 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Información didáctica por elemento (clave "sección:número" de la taxonomía). Las descripciones usan los datos del Excel
- * (tareas, frecuencias, historial de OT), de las rutinas y de lo que se ve en las fotos de planta.
+ * (tareas, frecuencias, historial de OT), de las OT maestras (mensual y anual) y de lo que se ve en las fotos de planta.
  * foto = foto real de planta (img/), plano = ilustración del manual, xray = la pieza queda tapada por la tina, la campana o la caja,
  * aprox = no sale en ninguna foto de planta: su forma o posición se tomó del manual (se muestra la insignia «Aproximado»). */
 window.INFO = {
@@ -17,7 +18,7 @@ window.INFO = {
 
     'motorreductor:1': { d: 'Motor trifásico WEG TEFC de 0.5 HP, 4 polos, 230/460 V, con carcasa de lámina rolada. Va colgado hacia abajo del reductor, dentro de la caja de acero inoxidable del lado B (zona B3). Cada mes se verifica temperatura (máx. 42 °C), amperaje (máx. 1.5 A) y voltaje (220 V). No sale en las fotos de planta: se dibujó según el manual.', foto: 'ref_a1', plano: 'x_motorreductor', xray: 1, aprox: 1 },
     'motorreductor:2': { d: 'Reductor de tornillo sin fin con brida NEMA C56 y salida hueca, reducción 40:1 (43.8 RPM), en posición vertical (V6). Está dentro de la caja del lado B. El aceite y los retenes se cambian cada año.', foto: 'ref_a1', plano: 'x_motorreductor', xray: 1, aprox: 1 },
-    'motorreductor:3': { d: 'Solenoide (electroválvula) de agua de 3/4" con bobina de 220 VAC, en el fondo del gabinete eléctrico, con la manguera azul del agua que entra y sale por abajo. Abre el paso del agua hacia la bomba Dossatron. Se prueba junto con el ITM principal en la rutina anual.', foto: 'ref_04', plano: 'x_solenoide' },
+    'motorreductor:3': { d: 'Solenoide (electroválvula) de agua de 3/4" con bobina de 220 VAC, en el fondo del gabinete eléctrico, con la manguera azul del agua que entra y sale por abajo. Abre el paso del agua hacia la bomba Dossatron. Se prueba junto con el ITM principal en la OT anual (TS01-PREV-ELEC-01).', foto: 'ref_04', plano: 'x_solenoide' },
 
     'dossatron:1': { d: 'Bomba dosificadora Dossatron D14MZ2-D (conexión 3/4" NPT, dilución 0.2–2 %, 0.05–14 GPM, 4.3–85 PSI). Va abrazada al borde de la tina, del lado B (zona B2), con la garrafa en el piso. Funciona con la presión del agua: succiona el sanitizante de la garrafa por un tubo azul y lo manda por tubería hacia la boquilla de aspersión. De su cuerpo sale una manguera transparente reforzada hacia la tina; en planta se cree que es la del drenaje (por confirmar).', foto: 'ref_07', plano: 'x_dossatron' },
 
@@ -44,7 +45,7 @@ window.INFO = {
     'transmision:9': { d: 'Flecha del rodillo motriz (salida): lleva 5 sprockets y recibe el giro del motorreductor por el cople negro del lado B.', foto: 'ref_a1', plano: 'x_transmision', xray: 1 },
     'transmision:10': { d: 'Placa 1 de las chumaceras (lado A, el del gabinete; 2 pzas).', plano: 'x_transmision' },
     'transmision:11': { d: 'Placa 2 de las chumaceras (lado B, el del motor; 2 pzas).', plano: 'x_transmision' },
-    'transmision:12': { d: 'Guías de desgaste de Naylamid: en planta son 4 varillas blancas (la taxonomía indica 5) que corren bajo la banda y asoman por la entrada, apoyadas en una placa con muescas. El personal de planta las identifica también como los «rodillos y ruedas laterales» de la rutina mensual. Si se desalinean o se sueltan, la banda se atora: 6 OT en el historial.', foto: 'ref_08', plano: 'x_transmision', xray: 1 },
+    'transmision:12': { d: 'Guías de desgaste de Naylamid: en planta son 4 varillas blancas (la taxonomía indica 5) que corren bajo la banda y asoman por la entrada, apoyadas en una placa con muescas. El personal de planta las identifica también como los «rodillos y ruedas laterales» de la OT mensual (TS01-INSP-MEC-01). Si se desalinean o se sueltan, la banda se atora: 6 OT en el historial.', foto: 'ref_08', plano: 'x_transmision', xray: 1 },
     'transmision:13': { d: 'Rondanas (8 pzas) que separan cada chumacera de su placa.', plano: 'x_transmision', xray: 1 },
     'transmision:14': { d: 'Rondana del reductor (1 pza) entre el brazo de reacción y la pata del reductor.', plano: 'x_transmision', xray: 1, aprox: 1 },
     'transmision:15': { d: 'Tres soportes de las guías de desgaste: la placa inox con muescas de la entrada (se ve en la foto) y dos travesaños bajo la banda (aproximados).', foto: 'ref_08', plano: 'x_transmision', xray: 1 },
@@ -53,7 +54,7 @@ window.INFO = {
     'transmision:18': { d: 'Cuatro soportes de los rodillos de retorno.', plano: 'x_transmision', xray: 1, aprox: 1 },
     'transmision:19': { d: 'Banda modular Serie 900 flush grid (330 mm × 2.7 m) armada con módulos unidos por varillas. Es la pieza que más falla: 16 OT por rotura de eslabones y 6 por atoramiento. En planta es azul.', foto: 'ref_11', plano: 'x_transmision', xray: 1 },
     'transmision:20': { d: 'Diez sprockets EZ Clean Serie 900 de 12 dientes (Ø 104 mm) en acetal, cinco por flecha. Engranan con la banda: si los dientes se desgastan la banda brinca.', foto: 'ref_01', plano: 'x_transmision', xray: 1 },
-    'transmision:21': { d: 'Cuatro chumaceras de brida UCFL205-D1 con carcasa blanca y inserto de acero inoxidable, para flecha de 25 mm: dos por lado, atornilladas a la pared de la tina. Cada mes se revisa desgaste y corrosión y se aplica grasa; en la rutina anual se cambian los rodamientos.', foto: 'ref_a1', plano: 'x_transmision' },
+    'transmision:21': { d: 'Cuatro chumaceras de brida UCFL205-D1 con carcasa blanca y inserto de acero inoxidable, para flecha de 25 mm: dos por lado, atornilladas a la pared de la tina. Cada mes se revisa desgaste y corrosión y se aplica grasa; en la OT anual se cambian los rodamientos.', foto: 'ref_a1', plano: 'x_transmision' },
     'transmision:22': { d: 'Cople de mordaza ML099 entre la flecha intermedia y el reductor, dentro de la caja del lado B.', plano: 'x_transmision', xray: 1, aprox: 1 },
     'transmision:23': { d: 'Rondanas planas de 1/2" (8 pzas) bajo las cabezas de los tornillos de las chumaceras.', plano: 'x_transmision' },
     'transmision:24': { d: 'Rondanas de presión de 1/2" (8 pzas) de los tornillos de las chumaceras.', plano: 'x_transmision' },

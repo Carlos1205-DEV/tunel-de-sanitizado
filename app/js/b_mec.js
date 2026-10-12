@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* BOQUILLA DE ASPERSIÓN (Unijet) · MOTORREDUCTOR WEG 0.5 HP + REDUCTOR SIN FIN 40:1 (en la caja inox del lado B) + SOLENOIDE 3/4" (dentro del gabinete)
  * · BOMBA DOSSATRON D14MZ2-D (abrazada al borde de la tina, lado B) · BOTONERA BM13 (paro de emergencia en la puerta del gabinete).
  * Referencia: fotos 3, 4, 6, 7 y 10 de la rutina mensual, dibujos del manual (imágenes 49–54 del Excel) y respuestas del usuario. */

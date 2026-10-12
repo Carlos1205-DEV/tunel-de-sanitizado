@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Motor de despiece (vista explosionada) para el modelo de la dosificadora.
  *  · Sección "en sitio": cada elemento de la sección se separa radialmente de su centro.
  *  · Sección "por separado": un ejemplar de cada elemento se acomoda en un tablero (catálogo) con el resto oculto.

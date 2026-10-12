@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* GABINETE ELÉCTRICO (15 elementos de la taxonomía) en A1: caja de acero inoxidable sobre un solo poste y sujeta a la tina con una ménsula,
  * puerta con bisagra a la izquierda, piloto bicolor, botón rojo, cerradura de llave y paro BM13; desconectador rojo/amarillo en el costado IZQUIERDO.
  * Referencia: fotos 2, 3, 4 y 6 de la rutina mensual (componentes Eaton). Lo que no se ve en las fotos (variador, fuente, relevadores) va aproximado. */

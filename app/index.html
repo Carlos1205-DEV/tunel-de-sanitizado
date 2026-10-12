@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="author" content="Jose Carlos Trejo Espinosa">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Túnel de Sanitizado 01</title>
+<title>Túnel de Sanitizado 01 · Modelo 3D interactivo — Qualtia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,13 +20,14 @@
   <header id="top">
     <div class="brand">
       <div class="brand-mark">T</div>
-      <div class="brand-txt"><b>TÚNEL DE SANITIZADO 01</b><small>OP TS01 · Empaque · Línea Cortes · Modelo 3D</small></div>
+      <div class="brand-txt"><b>TÚNEL DE SANITIZADO 01 <span class="planta">· Planta 2 Querétaro</span></b><small>Empaque · Línea Cortes · Modelo 3D · <span class="autor">Desarrollado por Jose Carlos Trejo Espinosa · 2026</span></small></div>
     </div>
     <nav id="modes" aria-label="Modos">
       <button data-mode="explorar" class="on"><span>①</span>Explorar</button>
       <button data-mode="ruta"><span>②</span>Ruta guiada</button>
-      <button data-mode="practica"><span>③</span>Práctica</button>
+      <button data-mode="historial"><span>③</span>Historial</button>
       <button data-mode="analisis"><span>④</span>Análisis</button>
+      <button data-mode="guia"><span>?</span>Guía</button>
     </nav>
     <button id="sysToggle" class="ghost" aria-label="Secciones">☰ Secciones</button>
   </header>
@@ -69,7 +71,8 @@
 
   <div id="hint">Arrastra para girar · rueda o pellizco para acercar · clic derecho para mover · toca una pieza para seleccionarla</div>
   <div id="toast" role="status"></div>
-  <div id="loading"><div class="spin"></div><div id="loadTxt">Construyendo modelo 3D…</div></div>
+  <figure id="lightbox" hidden><img alt=""><figcaption></figcaption><span class="lb-x">✕ Cerrar</span></figure>
+  <div id="loading"><div class="spin"></div><div id="loadTxt">Construyendo modelo 3D…</div><div class="credito">Desarrollado por Jose Carlos Trejo Espinosa · 2026</div></div>
 </div>
 
 <script src="lib/three.min.js"></script>
@@ -77,6 +80,7 @@
 <script src="data/taxonomia.js"></script>
 <script src="data/datos.js"></script>
 <script src="data/info.js"></script>
+<script src="data/guia.js"></script>
 <script src="js/core.js"></script>
 <script src="js/b_base.js"></script>
 <script src="js/b_transmision.js"></script>
@@ -86,6 +90,8 @@
 <script src="js/model.js"></script>
 <script src="js/despiece.js"></script>
 <script src="js/app.js"></script>
+<script src="js/pdf.js"></script>
 <script src="js/modes.js"></script>
+<script src="js/guia.js"></script>
 </body>
 </html>

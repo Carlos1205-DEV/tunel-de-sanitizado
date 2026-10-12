@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Ensamblado del modelo 3D del TÚNEL DE SANITIZADO 01 a partir de la taxonomía del Excel.
  * Cada sección (7) es un grupo; cada elemento de la taxonomía es un sub-grupo seleccionable (comp:i).
  * Cada hijo directo de una sección queda dentro de una "unidad" (envoltorio) que el despiece puede desplazar. */

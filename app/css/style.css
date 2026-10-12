@@ -1,9 +1,10 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Túnel de Sanitizado 01 · interfaz del modelo 3D interactivo (tema oscuro propio del visor 3D) */
 :root{
   --bg:#12161a; --panel:#181d22ee; --panel-solid:#181d22; --panel-2:#20272e; --panel-3:#2a333b; --line:#333d47;
   --ink:#eef0f2; --ink-soft:#a9b3bd; --amber:#e0a23a; --amber-deep:#b87a1e; --amber-ink:#14110a;
   --crit:#d4493f; --alta:#e07b32; --media:#e2b43a; --baja:#4aa872; --ok:#4aa872; --water:#3fa2e8;
-  --font-head:'Barlow Condensed',system-ui,sans-serif; --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-head:'Barlow Condensed','Arial Narrow','Roboto Condensed',system-ui,sans-serif; --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
   --top:calc(54px + env(safe-area-inset-top,0px)); --safe-b:env(safe-area-inset-bottom,0px); --panel-w:400px; --sys-w:250px;
   color-scheme:dark;
 }
@@ -17,11 +18,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 /* ---------- barra superior ---------- */
 #top{position:absolute;top:0;left:0;right:0;height:var(--top);display:flex;align-items:center;gap:14px;padding:env(safe-area-inset-top,0px) 14px 0;
   background:linear-gradient(180deg,#0c0f12f2,#0c0f12aa);border-bottom:2px solid var(--amber);z-index:20;backdrop-filter:blur(6px)}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1 1 auto}
 .brand-mark{width:32px;height:32px;border-radius:4px;background:var(--amber);color:#111;display:grid;place-items:center;font:700 22px var(--font-head);flex:0 0 auto}
-.brand-txt b{display:block;font:700 22px/1 var(--font-head);letter-spacing:.02em;white-space:nowrap}
+.brand-txt{min-width:0}
+.brand-txt b{display:block;font:700 22px/1 var(--font-head);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-txt .planta{font-size:16px;font-weight:600;color:var(--ink-soft);letter-spacing:.03em}
+.brand-txt .autor{color:var(--amber)}
 .brand-txt small{display:block;font-size:11px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#modes{display:flex;gap:4px;margin-left:auto}
+#modes{display:flex;gap:4px;margin-left:auto;flex:0 0 auto}
 #modes button,.ghost{background:transparent;border:1px solid transparent;border-radius:20px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap}
 #modes button span{opacity:.55;margin-right:5px;font-weight:500}
 #modes button:hover{color:var(--ink)}
@@ -218,9 +222,37 @@ table.t td,table.t th{padding:6px 4px;border-bottom:1px solid var(--line);text-a
 #toast.show{opacity:1}
 #loading{position:absolute;inset:0;z-index:50;background:var(--bg);display:grid;place-content:center;justify-items:center;gap:14px;color:var(--ink-soft);font-size:14px;transition:opacity .4s}
 #loading.done{opacity:0;pointer-events:none}
+.credito{font-size:12px;color:var(--ink-soft);opacity:.8}
 .spin{width:38px;height:38px;border:4px solid var(--line);border-top-color:var(--amber);border-radius:50%;animation:sp .9s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:2.4s}#panel,#dock{transition:none}}
+
+/* ---------- historial de rutinas ---------- */
+.hfil{display:grid;grid-template-columns:1fr 1fr;gap:0 8px}
+.hfil .field{margin:4px 0}
+.hfil select,.hfil input{width:100%;padding:7px 8px;border-radius:6px;border:1px solid var(--line);background:#0f1317;color:var(--ink);font:inherit;font-size:12.5px;color-scheme:dark}
+.hrow{padding:10px 12px;margin-bottom:8px}
+.hrow small{display:block;margin-top:2px}
+.hask{margin:10px 0}
+
+/* ---------- guía de uso ---------- */
+.gsec{border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--panel-2);overflow:hidden}
+.gsec.open{border-color:var(--amber)}
+.gh{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;padding:11px 12px;text-align:left;font:600 15px var(--font-head);letter-spacing:.02em;text-transform:uppercase}
+.gn{flex:0 0 24px;height:24px;border-radius:50%;background:var(--amber);color:#14110a;display:grid;place-items:center;font:700 13px var(--font)}
+.gc{margin-left:auto;font-size:18px;color:var(--ink-soft)}
+.gb{padding:2px 14px 14px;font-size:13.5px;line-height:1.55;color:#d6dbe0}
+.gb p{margin:8px 0}.gb ol,.gb ul{margin:8px 0 8px 20px}.gb li{margin:4px 0}
+.gb b{color:var(--ink)}
+.gb table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+.gb td,.gb th{border-bottom:1px solid var(--line);padding:6px 4px;text-align:left;vertical-align:top}
+.gb th{color:var(--ink-soft);font-weight:600}
+.gimg{width:100%;border-radius:6px;border:1px solid var(--line);margin:8px 0;cursor:zoom-in}
+#lightbox{position:fixed;inset:0;z-index:60;background:#000d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;margin:0;cursor:zoom-out}
+#lightbox[hidden]{display:none}
+#lightbox img{max-width:100%;max-height:85vh;border-radius:6px}
+#lightbox figcaption{color:#fff;font-size:13px}
+.lb-x{position:absolute;top:14px;right:18px;color:#fff;font-size:14px;font-weight:600;background:#0008;padding:6px 12px;border-radius:16px}
 
 /* ---------- tablet y celular ---------- */
 @media (max-width:1100px){:root{--panel-w:340px;--sys-w:220px}}

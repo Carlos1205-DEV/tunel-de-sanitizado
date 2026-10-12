@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* Túnel de Sanitizado 01 · aplicación 3D interactiva: escena, selección, controles, panel y despiece */
 (function () {
   'use strict';
@@ -5,6 +6,8 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
   const esc = s => (s === null || s === undefined) ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  // fotos: en la versión de un solo archivo vienen incluidas (window.IMAGENES); si no, se leen de la carpeta img/
+  const imgSrc = n => (window.IMAGENES && window.IMAGENES[n]) || 'img/' + n + '.jpg';
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } }
@@ -41,7 +44,8 @@
   }
   const compOf = sel => sel ? (sel.kind === 'elem' ? ELEM[sel.id].comp : sel.id) : null;
 
-  const TASKS = []; DATA.fichas.forEach(f => f.items.forEach(it => TASKS.push(Object.assign({ ficha: f.id, fichaTitulo: f.titulo }, it))));
+  // las tareas del túnel son las de las 2 OT maestras (Tarea No. TS01-…); `ficha` = id de la OT
+  const TASKS = []; DATA.ots.forEach(o => o.items.forEach(it => TASKS.push(Object.assign({ ficha: o.id, fichaTitulo: o.corto, orden: o.orden }, it))));
   const SEV_ORDER = { 'CRÍTICO': 3, 'MEDIA': 2, 'BAJA': 1 }, SEV_CLASS = { 'CRÍTICO': 'crit', 'MEDIA': 'media', 'BAJA': 'baja' }, SEV_LABEL = { 'CRÍTICO': 'Crítico', 'MEDIA': 'Moderado', 'BAJA': 'Normal' };
   const SEV_HEX = { 'CRÍTICO': 0xd4493f, 'MEDIA': 0xe2b43a, 'BAJA': 0x4aa872 };
   const FREQ = { MENSUAL: 'Mensual', ANUAL: 'Anual', SEMESTRAL: 'Semestral', DIARIA: 'Diaria' };
@@ -99,7 +103,9 @@
   /* ---------- estado ---------- */
   const S = { mode: 'explorar', sel: null, focus: null, hover: null, tab: 'resumen', xray: false, iso: false, labels: false, run: false, stop: false, exp: 0, cut: 0, heat: 'none', door: false, autoDoor: false, autoXray: false, onPick: null, hint: null };
   const D = { compMode: null, compId: null, elem: null, k: 1, autoIso: false, autoIso2: false, pins: [] };
-  let model = null, despiece = null, detailLevel = SMALL ? 1 : 1.6;
+  const CAL = [['Ultra', 2.4], ['Alta', 1.6], ['Media', 1], ['Baja', 0.6]];      // calidad gráfica = nivel de malla
+  const calGuardada = CAL.find(c => c[0] === store.get('ts01_calidad', ''));
+  let model = null, despiece = null, detailLevel = calGuardada ? calGuardada[1] : (SMALL ? 1 : 1.6);
 
   /* ---------- materiales: base, resaltado, fantasma, rayos X, mapa de calor ---------- */
   const shellMats = new Map(), vars = new Map(), hiMats = [];
@@ -360,7 +366,7 @@
     if (moved > 6 || dt > 500) return;
     const u = pick(e);
     if (S.onPick) { S.onPick(u ? (u.elem || ('comp:' + u.comp)) : null, u); return; }
-    if (S.mode === 'ruta' || S.mode === 'practica') return;
+    if (S.mode === 'ruta') return;
     if (u) select(u.elem ? { kind: 'elem', id: u.elem } : { kind: 'comp', id: u.comp }, { fly: false }); else if (S.sel || S.focus) select(null, { fly: false });
   });
   const tip = $('#tip'); let hoverBusy = false;
@@ -442,7 +448,7 @@
   function bindDes() { const ks = $('#sDesK', panelBody); if (ks) ks.oninput = e => { D.k = e.target.value / 100; despiece.setK(D.k); }; }
   function rowTask(t) {
     return `<button class="row click" data-act="goTask" data-fid="${t.ficha}" data-code="${t.codigo}"><div class="top"><span>${esc(sentence(t.texto))}</span>${tag(FREQ[t.frec] || t.frec)}</div>
-      <div class="sub">${esc(t.codigo)} · ${esc(t.per)} · ${esc(nivelLabel(t.nivel))} · ${t.min} min${t.paro === 'SI' ? ' ' + tag('Requiere paro', 'paro') : ''} · ${esc(t.fichaTitulo)}</div></button>`;
+      <div class="sub">${esc(t.codigo)} · ${esc(nivelLabel(t.nivel))} · ${t.min} min${t.paro === 'SI' ? ' ' + tag('Requiere paro', 'paro') : ''} · ${esc(t.fichaTitulo)}</div></button>`;
   }
   function sentence(s) { s = String(s || '').trim(); if (!s) return ''; s = s.toLowerCase(); s = s.charAt(0).toUpperCase() + s.slice(1); return s.replace(/\b(sprea|dossatron|itm|rpm|vac|vdc|uc?fl?\d*|plc|hmi)\b/gi, m => m.length <= 4 ? m.toUpperCase() : m.charAt(0).toUpperCase() + m.slice(1)).replace(/°c\b/g, '°C').replace(/\b(naylamid)\b/i, 'Naylamid'); }
   function rowRef(r) { return `<div class="row"><div class="top"><b>${esc(r.desc)}</b>${sevTag(r.sev)}</div><div class="sub">${esc(r.uds || '')} · ${esc(r.parte)}</div></div>`; }
@@ -455,7 +461,7 @@
     return `<div class="tabs">${tabs.map(t => `<button class="${S.tab === t[0] ? 'on' : ''}" data-act="tab" data-t="${t[0]}">${t[1]}${t[2] !== undefined ? `<span class="n">${t[2]}</span>` : ''}</button>`).join('')}</div>`;
   }
   function listTab(D0) {
-    if (S.tab === 'tareas') return D0.tareas.length ? D0.tareas.map(rowTask).join('') : '<div class="empty">Sin tareas de la rutina mensual o anual para esta pieza.</div>';
+    if (S.tab === 'tareas') return D0.tareas.length ? D0.tareas.map(rowTask).join('') : '<div class="empty">Ninguna tarea de las OT mensual o anual se hace en esta pieza.</div>';
     if (S.tab === 'refs') return D0.refs.length ? D0.refs.slice().sort((a, b) => (SEV_ORDER[b.sev] || 0) - (SEV_ORDER[a.sev] || 0)).map(rowRef).join('') : '<div class="empty">Sin refacciones enlazadas a esta pieza en el Excel.</div>';
     return D0.fallas.length ? D0.fallas.map(rowFalla).join('') : '<div class="empty">Sin fallas registradas para esta pieza en el historial.</div>';
   }
@@ -463,7 +469,7 @@
   function titleOf(n) { let t = clean(n).split(',')[0].replace(/\s*\(.*$/, ''); if (t.length > 58) { t = t.slice(0, 56); t = t.slice(0, t.lastIndexOf(' ')) + '…'; } return t; }
   function heroHtml(c, key, title, kicker) {
     const im = key ? infoOf(key) : {}, ci = INFO.comp[c.id] || {}, foto = im.foto || ci.foto;
-    return foto ? `<div class="p-hero"><img src="img/${foto}.jpg" alt="Foto de planta: ${esc(title)}"><div class="ph-txt"><div class="p-sys" style="color:${c.color}">${esc(kicker)}</div><div class="p-title${title.length > 30 ? ' long' : ''}">${esc(title)}</div></div></div>`
+    return foto ? `<div class="p-hero"><img src="${imgSrc(foto)}" alt="Foto de planta: ${esc(title)}"><div class="ph-txt"><div class="p-sys" style="color:${c.color}">${esc(kicker)}</div><div class="p-title${title.length > 30 ? ' long' : ''}">${esc(title)}</div></div></div>`
       : `<div class="p-head"><div class="p-sys" style="color:${c.color}">${esc(kicker)}</div><div class="p-title${title.length > 30 ? ' long' : ''}">${esc(title)}</div></div>`;
   }
   function specials(key) {
@@ -488,8 +494,8 @@
         <div class="kv"><span>Sección</span><b>${esc(c.name)}</b></div></div>
         <div class="btns">${specials(key)}<button class="btn sm" data-act="prev">◂ Anterior</button><button class="btn sm" data-act="next">Siguiente ▸</button><button class="btn sm" data-act="toComp">Ver sección completa</button></div>
         ${desBlockElem(key)}${desBlockComp(e.comp)}
-        ${im.plano ? `<h3 class="sec">Plano del manual</h3><img class="photo" src="img/${im.plano}.jpg" alt="Plano del manual" loading="lazy">` : ''}
-        ${im.foto ? `<h3 class="sec">Foto de referencia</h3><img class="photo" src="img/${im.foto}.jpg" alt="Foto de referencia" loading="lazy">` : ''}`;
+        ${im.plano ? `<h3 class="sec">Plano del manual</h3><img class="photo" src="${imgSrc(im.plano)}" alt="Plano del manual" loading="lazy">` : ''}
+        ${im.foto ? `<h3 class="sec">Foto de referencia</h3><img class="photo" src="${imgSrc(im.foto)}" alt="Foto de referencia" loading="lazy">` : ''}`;
     } else body = listTab(D0);
     return `${heroHtml(c, key, titleOf(e.n), 'Elemento ' + (idx + 1) + ' de ' + c.n)}${tabsHtml(D0)}<div class="p-body">${body}
       ${S.tab === 'resumen' ? `<h3 class="sec">Elementos de la sección</h3>${elemTable(c, e)}` : ''}</div>`;
@@ -505,7 +511,7 @@
         <div class="badges">${tag(c.n + ' elementos')}${tag(c.pieces + ' piezas')}${tag(TAXO.sistemas[c.sys])}${crit ? tag(crit + ' críticas', 'crit') : ''}${tag(D0.fallas.length + ' OT')}${c.extra ? tag('Modelado por fotos', 'nuevo') : ''}</div>
         <div class="btns"><button class="btn sm${S.iso && !D.autoIso ? ' pri' : ''}" data-act="iso">Aislar sección</button><button class="btn sm" data-act="all">Vista general</button>${id === 'gabinete' ? `<button class="btn sm pri" data-act="door">${S.door ? 'Cerrar' : 'Abrir'} la puerta</button>` : ''}</div>
         ${desBlockComp(id)}
-        ${(INFO.comp[id] || {}).plano ? `<h3 class="sec">Plano del manual</h3><img class="photo" src="img/${INFO.comp[id].plano}.jpg" alt="Plano del manual" loading="lazy">` : ''}
+        ${(INFO.comp[id] || {}).plano ? `<h3 class="sec">Plano del manual</h3><img class="photo" src="${imgSrc(INFO.comp[id].plano)}" alt="Plano del manual" loading="lazy">` : ''}
         <h3 class="sec">Elementos de la sección</h3>${elemTable(c, null)}`;
     } else body = listTab(D0);
     return `${heroHtml(c, null, c.name, TAXO.sistemas[c.sys])}${tabsHtml(D0)}<div class="p-body">${body}</div>`;
@@ -514,17 +520,18 @@
     const mec = TAXO.comps.filter(c => c.sys === 'mec'), ele = TAXO.comps.filter(c => c.sys === 'ele'), pcs = a => a.reduce((x, c) => x + c.pieces, 0);
     const crit = DATA.refs.filter(r => r.sev === 'CRÍTICO').length;
     return `<div class="p-head"><div class="p-sys">Vista general</div><div class="p-title">Túnel de sanitizado 01</div></div>
-      <div class="p-body"><p class="p-desc">Modelo 3D hecho con las <b>fotos de planta</b> de las rutinas; la taxonomía del Excel aporta los nombres, secciones, partes y refacciones. Cada uno de los <b>${TOTAL_EL} elementos</b> está modelado y agrupado en su sección. Gíralo, toca cualquier pieza y verás qué es, qué se revisa en las rutinas, qué refacciones lleva y cómo ha fallado.</p>
+      <div class="p-body"><p class="p-desc">Modelo 3D hecho con las <b>fotos de planta</b> de las ayudas visuales; la taxonomía del Excel aporta los nombres, secciones, partes y refacciones. Cada uno de los <b>${TOTAL_EL} elementos</b> está modelado y agrupado en su sección. Gíralo, toca cualquier pieza y verás qué es, qué tareas de las OT se le hacen, qué refacciones lleva y cómo ha fallado.</p>
       <div class="btns"><button class="btn pri" data-act="tour">▶ Recorrido por las secciones</button></div>
-      <div class="kpis" style="margin:14px 0"><div class="kpi"><b>${TAXO.comps.length}</b><span>secciones</span></div><div class="kpi"><b>${TOTAL_EL}</b><span>elementos</span></div><div class="kpi"><b>${TASKS.length}</b><span>tareas (mensual y anual)</span></div><div class="kpi"><b>${DATA.fallas.length}</b><span>OT en el historial</span></div></div>
+      <div class="kpis" style="margin:14px 0"><div class="kpi"><b>${TAXO.comps.length}</b><span>secciones</span></div><div class="kpi"><b>${TOTAL_EL}</b><span>elementos</span></div><div class="kpi"><b>${TASKS.length}</b><span>tareas en las 2 OT</span></div><div class="kpi"><b>${DATA.fallas.length}</b><span>OT en el historial</span></div></div>
       <h3 class="sec">Prueba esto</h3>
       <div class="chips"><button class="chip" data-act="run">▶ Simular operación</button><button class="chip" data-act="door">Abrir el gabinete</button><button class="chip" data-act="xray">Ver por dentro (rayos X)</button><button class="chip" data-act="explode">Explosionar el equipo</button><button class="chip" data-act="heat" data-h="refs">Mapa de calor de refacciones</button></div>
       <h3 class="sec">Secciones</h3><div class="chips">${TAXO.comps.map(c => `<button class="chip" data-act="comp" data-id="${c.id}" style="border-left:3px solid ${c.color}">${esc(c.name)}</button>`).join('')}</div>
       <h3 class="sec">Aprende</h3>
-      <button class="card click" data-act="mode" data-m="ruta"><b class="t">Ruta guiada</b><small>Recorre las rutinas mensual (${DATA.fichas[0].items.length} puntos) y anual (${DATA.fichas[1].items.length} puntos) con las claves B, BP, BCF, X y N/A, ubicando cada punto en el 3D.</small></button>
-      <button class="card click" data-act="mode" data-m="practica"><b class="t">Práctica</b><small>Ubica piezas y responde preguntas generadas con tus rutinas y refacciones.</small></button>
+      <button class="card click" data-act="mode" data-m="ruta"><b class="t">Ruta guiada</b><small>Haz las tareas de la OT mensual (${DATA.ots[0].items.length}) y de la OT anual (${DATA.ots[1].items.length}) una por una, con las claves B, BP, BCF, X y N/A, ubicando cada una en el 3D.</small></button>
+      <button class="card click" data-act="mode" data-m="historial"><b class="t">Historial</b><small>Todas las OT terminadas con sus tareas: filtra por técnico, OT o fechas, baja el PDF de cada una o exporta a Excel.</small></button>
       <button class="card click" data-act="mode" data-m="analisis"><b class="t">Análisis</b><small>Pareto de las ${DATA.fallas.length} OT, refacciones críticas (${crit}) y mapa de calor sobre el modelo.</small></button>
-      <p class="note" style="margin-top:12px">Datos de <b>TUNEL SANITIZADO FORMATO.xlsx</b> y de las rutinas mensual y anual. El modelo es una representación didáctica: la tina, la campana, las cortinas, las mangueras y la caja del motorreductor se dibujaron con las fotos y lo que indicó el personal de planta; lo que no sale en ninguna foto se marca como «aproximado». Lado A = el del gabinete; lado B = el de la bomba y el motor.</p></div>`;
+      <button class="card click" data-act="mode" data-m="guia"><b class="t">Guía de uso</b><small>Cómo usar cada botón, hacer las tareas de una OT, sacar el PDF y consultar el historial, con imágenes.</small></button>
+      <p class="note" style="margin-top:12px">Datos de <b>TUNEL SANITIZADO FORMATO.xlsx</b> y de las dos <b>OT maestras</b> (mensual y anual), que son las tareas del túnel. El modelo es una representación didáctica: la tina, la campana, las cortinas, las mangueras y la caja del motorreductor se dibujaron con las fotos y lo que indicó el personal de planta; lo que no sale en ninguna foto se marca como «aproximado». Lado A = el del gabinete; lado B = el de la bomba y el motor.</p></div>`;
   }
   ACT.tab = d => { S.tab = d.t; renderPanel(); };
   ACT.elem = d => select({ kind: 'elem', id: d.key });
@@ -571,8 +578,8 @@
   menuMas.innerHTML = `${chk('rot', 'Giro automático')}${chk('labels', 'Etiquetas de secciones')}${chk('door', 'Puerta del gabinete')}${chk('estop', 'Paro de emergencia')}
     <div class="sep" role="separator"></div><div class="hd" role="presentation">Mapa de calor</div>
     ${rad('heat', 'none', 'Apagado', true)}${rad('heat', 'refs', 'Severidad de refacciones')}${rad('heat', 'fallas', 'Fallas históricas (OT)')}
-    <div class="sep" role="separator"></div><div class="hd" role="presentation">Calidad del modelo</div>
-    ${rad('q', '1', 'Estándar', !(detailLevel > 1))}${rad('q', '1.6', 'Alta', detailLevel === 1.6)}${rad('q', '2.4', 'Máxima')}
+    <div class="sep" role="separator"></div><div class="hd" role="presentation">Calidad gráfica</div>
+    ${CAL.map(c => rad('q', c[1], c[0], c[1] === detailLevel)).join('')}
     <div class="sep" role="separator"></div>${chk('hd', 'Más píxeles (HD)')}`;
   setChk('rot', true);
   function setChk(id, v) { $$(`[data-chk="${id}"]`).forEach(b => b.setAttribute('aria-checked', String(!!v))); }
@@ -597,7 +604,7 @@
       else if (id === 'estop') setEstop(!S.stop);
       else if (id === 'hd') { hd = !hd; setChk('hd', hd); setPixelRatio(); }
     } else if (b.dataset.heat) setHeat(b.dataset.heat);
-    else if (b.dataset.q) { $$('[data-q]', menuMas).forEach(x => x.setAttribute('aria-checked', String(x === b))); rebuild(parseFloat(b.dataset.q)); }
+    else if (b.dataset.q) { $$('[data-q]', menuMas).forEach(x => x.setAttribute('aria-checked', String(x === b))); const c = CAL.find(k => k[1] === parseFloat(b.dataset.q)); if (c) store.set('ts01_calidad', c[0]); rebuild(parseFloat(b.dataset.q)); }
     closeMenus();
   });
   function setHeat(h) { S.heat = h; $$('[data-heat]', menuMas).forEach(x => x.setAttribute('aria-checked', String(x.dataset.heat === h))); refresh(); if (S.mode === 'analisis') renderPanel(true); }
@@ -674,7 +681,7 @@
   function loop() {
     requestAnimationFrame(loop);
     const raw = clock.getDelta(), dt = Math.min(raw, 0.05), t = performance.now();
-    if (!fpsDone && t > 2500) { fpsLog.push(raw); if (fpsLog.length >= 60) { fpsDone = true; fpsLog.sort((a, b) => a - b); const med = fpsLog[30]; if (med > 0.05 && detailLevel > 1) { $$('[data-q]', menuMas).forEach(x => x.setAttribute('aria-checked', String(x.dataset.q === '1'))); rebuild(1); toast('Malla ajustada a Estándar para mantener la fluidez. Puedes subirla en Más.'); } } }
+    if (!fpsDone && t > 2500) { fpsLog.push(raw); if (fpsLog.length >= 60) { fpsDone = true; fpsLog.sort((a, b) => a - b); const med = fpsLog[30]; if (med > 0.05 && detailLevel > 1) { $$('[data-q]', menuMas).forEach(x => x.setAttribute('aria-checked', String(x.dataset.q === '1'))); rebuild(1); toast('Calidad ajustada a Media para mantener la fluidez. Puedes subirla en Más › Calidad del modelo.'); } } }
     if (tween) { const k = Math.min(1, (t - tween.t0) / tween.ms), e = ease(k); camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.g0, tween.g1, e); if (k >= 1) tween = null; }
     controls.update(); model.update(dt); despiece.update(dt);
     const kk = 0.5 + 0.22 * Math.sin(t / 220); hiMats.forEach(m => { m.emissiveIntensity = kk; });
@@ -683,7 +690,7 @@
 
   /* ---------- API compartida con los modos y arranque ---------- */
   const TS = window.TS = {
-    S, D, COMP, ELEM, TAXO, DATA, INFO, TASKS, ACT, MODE_RENDER, $, $$, esc, store, nice, clean, sentence, tag, sevTag, nivelLabel, FREQ, SEV_ORDER, SEV_LABEL, SEV_CLASS, SEV_HEX,
+    S, D, COMP, ELEM, TAXO, imgSrc, DATA, INFO, TASKS, ACT, MODE_RENDER, $, $$, esc, store, nice, clean, sentence, tag, sevTag, nivelLabel, FREQ, SEV_ORDER, SEV_LABEL, SEV_CLASS, SEV_HEX,
     tasksFor, refsFor, fallasFor, tasksForComp, refsForComp, fallasForComp, dataOf, dataOfComp, infoOf, select, setFocus, focusKeys, setView, flyTo, stopAuto, toast, showBanner, hideBanner, refresh, renderPanel: (k) => renderPanel(k),
     setRun, setEstop, setDoor, setXray, setHeat, setMode, iso, V3, camera, controls, renderer, scene, get model() { return model; }, set model(v) { model = v; }, get despiece() { return despiece; }, set despiece(v) { despiece = v; }, rebuild, desStartComp, desStopComp, desStartElem, desStopElem
   };

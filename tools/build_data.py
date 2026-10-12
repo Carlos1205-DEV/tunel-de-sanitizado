@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
+# © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados.
 """Genera app/data/taxonomia.js, app/data/datos.js y app/img/ para la app del Túnel de Sanitizado 01
 a partir del Excel y los .docx del repositorio.   Uso:  python3 tools/build_data.py   (requiere openpyxl y Pillow)"""
 import json, re, zipfile, os, warnings, shutil
 import openpyxl
 from PIL import Image
 warnings.filterwarnings('ignore')
+AVISO = '/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */\n'
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 APP = REPO + '/app'
@@ -79,18 +81,48 @@ TAXO = {'sistemas': {'mec': 'Sistema mecánico', 'ele': 'Sistema eléctrico'}, '
 for c in comps_out:
     print(c['id'], len(c['items']))
 
-# ------------------------------------------------------------------ tareas (Excel)
-ws = wb['TAREAS ']
-tareas = {}
-for r in ws.iter_rows(min_row=8, values_only=True):
-    per = clean(r[8])
-    if not per or not per.startswith('TS01'): continue
-    tareas[per] = {'per': per, 'clase': clean(r[1]), 'tactica': clean(r[3]), 'frec': clean(r[6]).upper(),
-                   'paro': clean(r[7]).upper(), 'nivel': clean(r[9]).upper(), 'min': int(float(clean(r[10]) or 0)),
-                   'herr': '' if clean(r[11]) in ('', 'N/A') else clean(r[11]), 'act': clean(r[5])}
-print('tareas', len(tareas))
+# ------------------------------------------------------------------ tareas = las OT maestras (PDF)
+# Las TAREAS del túnel son las de las dos órdenes de trabajo maestras (OT) en PDF: «Tarea No.», texto y horas estimadas.
+# El Excel (hoja TAREAS) aporta lo que la OT no trae (sistema, táctica, requiere paro, nivel, herramientas) y las rutinas (.docx)
+# aportan la foto de la ayuda visual; ambos se unen a cada tarea por el texto de la actividad (en las 22 tareas coincide al 100 %).
+import subprocess, unicodedata
+def norm(s):
+    s = unicodedata.normalize('NFD', s or '').encode('ascii', 'ignore').decode().upper()
+    return re.sub(r'[^A-Z0-9]+', ' ', s).strip()
 
-# ------------------------------------------------------------------ rutinas (docx)
+def leer_ot(path):
+    txt = subprocess.run(['pdftotext', '-layout', path, '-'], capture_output=True, text=True, check=True).stdout
+    ot = {'orden': re.search(r'Orden No\.:\s*(\S+)', txt).group(1)}
+    ot['descripcion'] = clean(re.search(r'Orden No\.:[^\n]*\n\s*(.+)', txt).group(1))
+    ot['emitida'] = re.search(r'(\d\d)/(\d\d)/(\d{4})', txt).expand(r'\3-\1-\2')
+    m = re.search(r'Equipo No\.[^\n]*\n\s*(OP \w+)\s+(.+?)\s{2,}(Qualtia.*)\n\s*(.*)', txt)
+    ot['equipo_no'], ot['equipo'], ot['localizacion'] = m.group(1), clean(m.group(2)), clean(m.group(3) + ' ' + m.group(4))
+    m = re.search(r'Prioridad[^\n]*\n\s*(\d+)\s+(\S+)\s+(\S+)', txt)
+    ot['turno'], ot['tipo'], ot['clase'] = m.group(1), m.group(2), m.group(3)
+    ot['mantenimiento'] = clean(re.search(r'ORDEN DE TRABAJO MAESTRA\s*\n\s*(.+)', txt).group(1))
+    ot['tareas'], cur = [], None
+    for ln in txt.split('\n'):
+        m = re.match(r'\s*Tarea No:\s*(\S+)\s+Hrs Estim\.:\s*([\d.]+)', ln)
+        if m: cur = {'codigo': m.group(1), 'hrs': float(m.group(2)), 'texto': ''}; ot['tareas'].append(cur); continue
+        if cur is not None:
+            if re.match(r'\s*Cada', ln): cur = None
+            elif ln.strip(): cur['texto'] = (cur['texto'] + ' ' + clean(ln)).strip()
+    return ot
+
+OT_PDF = [('mensual', 'OT mensual', 'Inspección mensual general · equipo operando', REPO + '/OT TUNEL DE SANITIZADO 01 MENSUAL EQUIPO OPERANDO.pdf'),
+          ('anual', 'OT anual', 'Mantenimiento preventivo mecánico-eléctrico · equipo parado', REPO + '/OT TUNEL DE SANITIZADO 01 ANUAL EQUIPO PARADO.pdf')]
+
+# hoja TAREAS del Excel (por texto de la actividad)
+EXCEL = {}
+for r in wb['TAREAS '].iter_rows(min_row=8, values_only=True):
+    per = clean(r[8])
+    if not per.startswith('TS01'): continue
+    EXCEL[norm(clean(r[5]))] = {'per_excel': per, 'sistema': clean(r[1]).capitalize(), 'tactica': clean(r[3]).upper(), 'frec': clean(r[6]).upper(),
+                                'paro': clean(r[7]).upper(), 'nivel': clean(r[9]).upper(), 'min_excel': int(float(clean(r[10]) or 0)),
+                                'herr': '' if clean(r[11]) in ('', 'N/A') else clean(r[11])}
+print('tareas en el Excel:', len(EXCEL))
+
+# pasos de las rutinas (.docx): número de paso de la ayuda visual, por texto
 def docx_items(path):
     x = zipfile.ZipFile(path).read('word/document.xml').decode()
     paras = re.findall(r'<w:p[ >].*?</w:p>', x, re.S)
@@ -100,15 +132,13 @@ def docx_items(path):
         m = re.match(r'^(\d{4})\.-\s*\(\s*\)\s*(.+)$', t)
         if m: out.append((m.group(1), m.group(2).strip()))
     return out
-CODE2PER = {'1101': 'TS01-INSP-MEC-01', '1102': 'TS01-INSP-MEC-02', '1103': 'TS01-INSP-MEC-03', '1104': 'TS01-INSP-MEC-04',
-            '1105': 'TS01-INSP-MEC-05', '1106': 'TS01-INSP-MEC-06', '1107': 'TS01-INSP-MEC-07', '1108': 'TS01-INSP-MEC-08',
-            '1109': 'TS01-INSP-MEC-09', '1301': 'TS01-PREV-MEC-01', '3101': 'TS01-INSP-ELEC-01', '3201': 'TS01-PRED-MEC-01',
-            '3302': 'TS01-LIMP-ELEC-01', '7101': 'TS01-INSP-GRAL-01', '7102': 'TS01-INSP-GRAL-02',
-            '1302': 'TS01-PREV-MEC-02', '1303': 'TS01-PREV-MEC-03', '1304': 'TS01-PREV-MEC-04', '1305': 'TS01-PREV-MEC-05',
-            '1306': 'TS01-PREV-MEC-06', '1307': 'TS01-LIMP-MEC-01', '3301': 'TS01-PREV-ELEC-01'}
-SYSNAME = {'1': 'Mecánico', '2': 'Neumático', '3': 'Eléctrico', '4': 'Hidráulico', '5': 'Instrumentación', '6': 'Lubricación', '7': 'General'}
-CLASSNAME = {'1': 'Inspección', '2': 'Predictivo', '3': 'Preventivo'}
-# fotos de referencia (ver ref_XX.jpg) y puntos del 3D que cubre cada tarea
+PASO = {}      # texto normalizado -> número de paso de la rutina (1101…)
+for p in ('RUTINA MENSUAL TUNEL DE SANITIZADO 01 EQUIPO OPERANDO.docx', 'RUTINA ANUAL TUNEL DE SANITIZADO 01 EQUIPO PARADO.docx'):
+    for code, text in docx_items(REPO + '/' + p): PASO[norm(text)] = code
+# sistema y clase salen del «Tarea No.» de la OT (TS01-<clase>-<sistema>-NN), que manda sobre las etiquetas del Excel
+SISTEMA = {'MEC': 'Mecánico', 'ELEC': 'Eléctrico', 'GRAL': 'General'}
+CLASE = {'INSP': 'Inspección', 'PRED': 'Predictivo', 'PREV': 'Preventivo', 'LIMP': 'Limpieza'}
+# fotos de referencia (ver ref_XX.jpg) y puntos del 3D que cubre cada tarea (clave = paso de la rutina visual donde sale la foto)
 FOTO = {'1101': 'ref_08', '1102': 'ref_11', '1103': 'ref_09', '1104': 'ref_01', '1105': 'ref_07', '1106': 'ref_08', '1107': 'ref_09',
         '1108': 'ref_11', '1109': 'ref_10', '1301': 'ref_09', '3101': 'ref_03', '3201': 'ref_09', '3302': 'ref_04', '7101': 'ref_06',
         '7102': 'ref_05', '1302': 'ref_a1', '1303': 'ref_a1', '1304': 'ref_a1', '1305': 'ref_a1', '1306': 'ref_a1', '1307': 'ref_a1', '3301': 'ref_04'}
@@ -123,18 +153,33 @@ PUNTOS = {
     '1306': ['transmision:19'], '1307': ['motorreductor:1'], '3301': ['gabinete:5', 'gabinete:1', 'motorreductor:3']}
 # notas que se muestran en la ruta guiada (respuestas del personal de planta)
 NOTAS = {'1101': 'Según el personal de planta, los «rodillos y ruedas laterales» son las 4 varillas blancas de la entrada (foto 8).',
-         '1302': 'En planta no hay una bomba de recirculación aparte (no sale en ninguna foto) y la foto de la rutina anual señala la chumacera de la flecha; por eso se enlazan las chumaceras. Por confirmar.'}
-def ficha(fid, titulo, periodo, path):
+         '1302': 'En planta no hay una bomba de recirculación aparte (no sale en ninguna foto) y la foto de la ayuda visual anual señala la chumacera de la flecha; por eso se enlazan las chumaceras. Por confirmar.'}
+
+import difflib
+def buscar(dic, k):                     # coincidencia exacta o, si el texto cambia una letra, la más parecida (≥ 95 %)
+    if k in dic: return dic[k]
+    c = max(dic, key=lambda x: difflib.SequenceMatcher(None, x, k).ratio())
+    return dic[c] if difflib.SequenceMatcher(None, c, k).ratio() >= 0.95 else None
+
+ots = []
+for oid, corto, titulo, path in OT_PDF:
+    ot = leer_ot(path)
     items = []
-    for code, text in docx_items(path):
-        per = CODE2PER[code]; t = tareas.get(per, {})
-        items.append({'codigo': code, 'per': per, 'texto': text, 'sistema': SYSNAME[code[0]], 'clase': CLASSNAME[code[1]],
-                      'frec': t.get('frec', ''), 'paro': t.get('paro', ''), 'nivel': t.get('nivel', ''), 'min': t.get('min', 0),
-                      'herr': t.get('herr', ''), 'foto': FOTO.get(code, ''), 'puntos': PUNTOS[code], 'nota': NOTAS.get(code, '')})
-    return {'id': fid, 'titulo': titulo, 'periodo': periodo, 'items': items}
-fichas = [ficha('mensual', 'Rutina mensual', 'Equipo operando · inspección, predictivo y limpieza', REPO + '/RUTINA MENSUAL TUNEL DE SANITIZADO 01 EQUIPO OPERANDO.docx'),
-          ficha('anual', 'Rutina anual', 'Equipo parado · cambios preventivos y limpieza', REPO + '/RUTINA ANUAL TUNEL DE SANITIZADO 01 EQUIPO PARADO.docx')]
-for f in fichas: print(f['id'], len(f['items']))
+    for t in ot['tareas']:
+        k = norm(t['texto'])
+        ex, paso = buscar(EXCEL, k), buscar(PASO, k)
+        assert ex and paso, 'La tarea %s no se encontró por texto en el Excel o en la rutina' % t['codigo']
+        items.append({'codigo': t['codigo'], 'rutina': paso, 'per_excel': ex['per_excel'], 'texto': t['texto'].lower(),
+                      'sistema': SISTEMA[t['codigo'].split('-')[2]], 'clase': CLASE[t['codigo'].split('-')[1]], 'frec': ex['frec'], 'paro': ex['paro'], 'nivel': ex['nivel'],
+                      'min': int(t['hrs']) if t['hrs'] == int(t['hrs']) else t['hrs'], 'herr': ex['herr'], 'foto': FOTO.get(paso, ''),
+                      'puntos': PUNTOS[paso], 'nota': NOTAS.get(paso, '')})
+        if ex['per_excel'] != t['codigo']: print('  aviso: la OT llama %s a la tarea que el Excel llama %s' % (t['codigo'], ex['per_excel']))
+        if ex['min_excel'] != t['hrs']: print('  aviso: %s dura %s en la OT y %s en el Excel (se usa la OT)' % (t['codigo'], t['hrs'], ex['min_excel']))
+    ots.append({'id': oid, 'corto': corto, 'titulo': titulo, 'orden': ot['orden'], 'descripcion': ot['descripcion'], 'equipo_no': ot['equipo_no'],
+                'equipo': ot['equipo'], 'localizacion': ot['localizacion'], 'turno': ot['turno'], 'tipo': ot['tipo'], 'clase': ot['clase'],
+                'mantenimiento': ot['mantenimiento'], 'emitida': ot['emitida'], 'items': items})
+for o in ots: print(o['id'], o['orden'], len(o['items']), 'tareas')
+assert len({it['codigo'] for o in ots for it in o['items']}) == 22
 
 # ------------------------------------------------------------------ fallas
 ws = wb['FALLAS REPETITIVAS']
@@ -198,11 +243,11 @@ print('refs', len(refs), 'sin elemento:', [x['parte'] for x in refs if not x['el
 # ------------------------------------------------------------------ escribir JS
 os.makedirs(APP + '/data', exist_ok=True)
 with open(APP + '/data/taxonomia.js', 'w', encoding='utf-8') as f:
-    f.write('window.TAXO=' + json.dumps(TAXO, ensure_ascii=False, separators=(',', ':')) + ';\n')
-DATA = {'maquina': 'TÚNEL DE SANITIZADO 01 (OP TS01)', 'area': 'Empaque', 'linea': 'Cortes', 'tareas': tareas, 'fichas': fichas,
+    f.write(AVISO + 'window.TAXO=' + json.dumps(TAXO, ensure_ascii=False, separators=(',', ':')) + ';\n')
+DATA = {'maquina': 'TÚNEL DE SANITIZADO 01 (OP TS01)', 'area': 'Empaque', 'linea': 'Cortes', 'ots': ots,
         'fallas': fallas, 'pareto': pareto, 'grupoElem': GRUPO_ELEM, 'refs': refs}
 with open(APP + '/data/datos.js', 'w', encoding='utf-8') as f:
-    f.write('window.DATA=' + json.dumps(DATA, ensure_ascii=False, separators=(',', ':')) + ';\n')
+    f.write(AVISO + 'window.DATA=' + json.dumps(DATA, ensure_ascii=False, separators=(',', ':')) + ';\n')
 
 # ------------------------------------------------------------------ imágenes
 import io

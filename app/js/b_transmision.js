@@ -1,3 +1,4 @@
+/* © 2026 Jose Carlos Trejo Espinosa. Todos los derechos reservados. */
 /* TRANSMISIÓN, BANDA Y ESTRUCTURA — 35 elementos de la taxonomía (despiece oficial, imagen 55 del Excel).
  * Banda modular Serie 900 flush grid 330 mm × 2.7 m, 10 sprockets de 12 dientes, flechas, chumaceras UCFL205 de carcasa blanca,
  * 4 varillas blancas de desgaste (foto 8), rodillos de retorno, acoplamientos de mordaza negros (foto 9) y tornillería.
