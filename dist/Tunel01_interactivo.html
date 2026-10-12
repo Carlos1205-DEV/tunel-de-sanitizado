@@ -4394,7 +4394,7 @@ window.GUIA = [
     const o = otOf(h.fid) || { corto: h.ficha, titulo: h.titulo || h.ficha, orden: h.orden || '' };
     const doc = PDFMini.create(), M = 40, Wd = doc.W - 2 * M, INK = [0.12, 0.13, 0.15], SOFT = [0.42, 0.45, 0.5], AMB = [0.88, 0.64, 0.23];
     const COLR = { B: [0.16, 0.55, 0.3], BCF: [0.1, 0.4, 0.7], BP: [0.75, 0.5, 0.05], X: [0.8, 0.18, 0.15], 'N/A': [0.45, 0.47, 0.5] };
-    const cols = [{ t: '#', w: 20 }, { t: 'Tarea No.', w: 88 }, { t: 'Actividad', w: 164 }, { t: 'Min', w: 28 }, { t: 'Clave', w: 34 }, { t: 'Lecturas', w: 74 }, { t: 'Observaciones', w: Wd - 20 - 88 - 164 - 28 - 34 - 74 }];
+    const cols = [{ t: '#', w: 20 }, { t: 'Tarea No.', w: 100 }, { t: 'Actividad', w: 152 }, { t: 'Min', w: 26 }, { t: 'Clave', w: 32 }, { t: 'Lecturas', w: 72 }, { t: 'Observaciones', w: Wd - 20 - 100 - 152 - 26 - 32 - 72 }];
     const fecha = h.iso ? new Date(h.iso) : null, c = counts(h.res), ok = c.B + c.BCF;
     const dur = h.iso && h.inicio ? Math.max(1, Math.round((new Date(h.iso) - new Date(h.inicio)) / 60000)) : 0;
     let y;
@@ -4531,7 +4531,7 @@ window.GUIA = [
     const G = window.GUIA || [];
     return `<div class="p-head"><div class="p-sys">Ayuda</div><div class="p-title">Guía de uso</div></div>
     <div class="p-body"><p class="p-desc">Todo lo que tiene la aplicación, explicado paso a paso. Toca un tema para abrirlo; toca una imagen para verla grande.</p>
-      ${G.map((s, i) => `<div class="gsec ${G_.open === i ? 'open' : ''}"><button class="gh" data-act="gopen" data-i="${i}"><span class="gn">${i + 1}</span>${esc(s.t)}<span class="gc">${G_.open === i ? '−' : '+'}</span></button>${G_.open === i ? `<div class="gb">${s.html.replace(/\{img:([a-z0-9_]+)\|([^}]*)\}/g, (m, n, alt) => `<img class="gimg" src="${TS.imgSrc(n)}" alt="${esc(alt)}" data-act="gzoom">`)}</div>` : ''}</div>`).join('')}
+      ${G.map((s, i) => `<div class="gsec ${G_.open === i ? 'open' : ''}"><button class="gh" data-act="gopen" data-i="${i}"><span class="gn">${i + 1}</span>${esc(s.t)}<span class="gc">${G_.open === i ? '−' : '+'}</span></button>${G_.open === i ? `<div class="gb">${s.html.replace(/\{img:([a-z0-9_]+)\|([^}]*)\}/g, (m, n, alt) => `<img class="gimg" src="${TS.imgSrc(n)}" alt="${esc(alt)}" data-act="gzoom" onerror="this.style.display='none'">`)}</div>` : ''}</div>`).join('')}
     </div>`;
   }
   ACT.gopen = d => { G_.open = G_.open === +d.i ? -1 : +d.i; TS.renderPanel(true); };

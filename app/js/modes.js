@@ -257,7 +257,7 @@
     const o = otOf(h.fid) || { corto: h.ficha, titulo: h.titulo || h.ficha, orden: h.orden || '' };
     const doc = PDFMini.create(), M = 40, Wd = doc.W - 2 * M, INK = [0.12, 0.13, 0.15], SOFT = [0.42, 0.45, 0.5], AMB = [0.88, 0.64, 0.23];
     const COLR = { B: [0.16, 0.55, 0.3], BCF: [0.1, 0.4, 0.7], BP: [0.75, 0.5, 0.05], X: [0.8, 0.18, 0.15], 'N/A': [0.45, 0.47, 0.5] };
-    const cols = [{ t: '#', w: 20 }, { t: 'Tarea No.', w: 88 }, { t: 'Actividad', w: 164 }, { t: 'Min', w: 28 }, { t: 'Clave', w: 34 }, { t: 'Lecturas', w: 74 }, { t: 'Observaciones', w: Wd - 20 - 88 - 164 - 28 - 34 - 74 }];
+    const cols = [{ t: '#', w: 20 }, { t: 'Tarea No.', w: 100 }, { t: 'Actividad', w: 152 }, { t: 'Min', w: 26 }, { t: 'Clave', w: 32 }, { t: 'Lecturas', w: 72 }, { t: 'Observaciones', w: Wd - 20 - 100 - 152 - 26 - 32 - 72 }];
     const fecha = h.iso ? new Date(h.iso) : null, c = counts(h.res), ok = c.B + c.BCF;
     const dur = h.iso && h.inicio ? Math.max(1, Math.round((new Date(h.iso) - new Date(h.inicio)) / 60000)) : 0;
     let y;
