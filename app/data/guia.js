@@ -41,6 +41,8 @@ window.GUIA = [
 <ul><li><b>A. Nombre, sección y foto:</b> si el elemento sale en una foto de planta, aquí se ve. Los que no salen en ninguna foto llevan la insignia <b>Aproximado · no sale en las fotos</b>: se dibujaron por su descripción.</li>
 <li><b>B. Pestañas con datos del Excel:</b> Resumen (nombre completo, cantidad, número de parte y material), Tareas de las OT (Tarea No., qué se hace, cada cuánto y si requiere paro), Refacciones (con severidad) y Fallas (órdenes de trabajo históricas).</li>
 <li><b>C. Botones:</b> <i>◂ Anterior</i> y <i>Siguiente ▸</i> pasan al elemento vecino, <i>Ver sección completa</i> muestra toda la sección. Algunos elementos traen uno extra: <i>Abrir la puerta</i>, <i>Ver en operación</i> o <i>Accionar el paro de emergencia</i>.</li></ul>
+<p>La pestaña <b>Tareas</b> lista las tareas de las OT que se le hacen a ese elemento, cada una con su <b>Tarea No.</b> (por ejemplo <i>TS01-PREV-MEC-01</i>); al tocar una te lleva a la ruta guiada en esa tarea.</p>
+{img:guia_tareas|Pestaña Tareas de un elemento}
 <p>Si un elemento queda tapado (por la tina, la campana o la caja del motorreductor), la aplicación pone Rayos X o abre el gabinete sola para que lo veas.</p>
 <p><b>⤢ Despiece:</b> con una sección o un elemento seleccionado, el botón <b>Despiece</b> separa sus piezas para ver cómo está armado. Puedes dejarlo <i>en sitio</i> o <i>por separado</i> en un tablero, y con la barra <i>Separación</i> abrirlo más o menos.</p>
 {img:guia_despiece|Despiece de una sección}`
