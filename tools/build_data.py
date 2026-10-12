@@ -175,6 +175,7 @@ for oid, corto, titulo, path in OT_PDF:
                       'puntos': PUNTOS[paso], 'nota': NOTAS.get(paso, '')})
         if ex['per_excel'] != t['codigo']: print('  aviso: la OT llama %s a la tarea que el Excel llama %s' % (t['codigo'], ex['per_excel']))
         if ex['min_excel'] != t['hrs']: print('  aviso: %s dura %s en la OT y %s en el Excel (se usa la OT)' % (t['codigo'], t['hrs'], ex['min_excel']))
+    items.sort(key=lambda it: it['codigo'])      # orden por Tarea No., igual que las fichas de las otras máquinas (y que imprime la OT)
     ots.append({'id': oid, 'corto': corto, 'titulo': titulo, 'orden': ot['orden'], 'descripcion': ot['descripcion'], 'equipo_no': ot['equipo_no'],
                 'equipo': ot['equipo'], 'localizacion': ot['localizacion'], 'turno': ot['turno'], 'tipo': ot['tipo'], 'clase': ot['clase'],
                 'mantenimiento': ot['mantenimiento'], 'emitida': ot['emitida'], 'items': items})

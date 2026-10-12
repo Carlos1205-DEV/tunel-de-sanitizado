@@ -29,7 +29,7 @@
 - **Hrs Estim. de la OT**: la OT las rotula «Hrs Estim.» pero los números coinciden con los minutos del Excel (30 para limpiar el tablero, 300 para cambiar rodamientos; solo `TS01-PREV-MEC-01` difiere: 2 en la OT y 4 en el Excel); en la app se muestran como **minutos** (el campo se llama `min`). Por confirmar con mantenimiento.
 - **Requiere paro**: viene del Excel (la OT no trae esa columna). Dos tareas de la OT mensual de «equipo operando» salen con paro = SÍ (`TS01-PREV-ELEC-02`, limpieza del tablero, y `TS01-PREV-MEC-01`, chumaceras y grasa): la app muestra el aviso de paro y LOTO. Por confirmar con mantenimiento.
 - **«OT»** se usa para dos cosas: las 2 OT maestras (las tareas del túnel) y las 56 OT de falla del historial del Excel; en pantalla las segundas se rotulan «OT de falla».
-- El orden de las tareas en la ruta es el de la OT (el que imprime el sistema). Las fotos de las ayudas visuales se unen a cada tarea por su texto.
+- El orden de las tareas en la ruta es **por Tarea No.**, el mismo que imprime la OT y el mismo criterio de las fichas del Extrusor 01 y del Cheese Former (el usuario pidió hacerlo igual que las otras máquinas). Las fotos de las ayudas visuales se unen a cada tarea por su texto.
 - La tarea `TS01-PREV-MEC-02` habla de una «bomba de recirculación de agua» que en planta no existe aparte (ver arriba): se mantiene el texto de la OT y la nota «por confirmar».
 
 ## Por confirmar en planta (aparecen como «Aproximado» en la ficha)
