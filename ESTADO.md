@@ -6,7 +6,7 @@
 
 - **Modelo 3D v2** hecho con las fotos de planta (Three.js procedural, sin imágenes): 74 elementos (66 de la taxonomía + 8 que salen en las fotos: campana, cortinas, tina, mangueras de drenaje, garrafa, mangueras azules y conduit, caja inox del motorreductor). Distribución confirmada por el usuario: entrada con 4 varillas blancas, gabinete en A1, Dossatron y garrafa en B2, flecha con cople negro y motorreductor en caja inox en B3 (ver `CLAUDE.md` y `docs/hallazgos-fotos.md`).
 - **Explorar**: ficha por elemento con tareas, refacciones, fallas, foto y plano; vistas en lista desplegable; rayos X, aislar, explosión general, corte de la campana y **despiece** (en sitio, por separado y por elemento); mapa de calor; recorrido por las secciones.
-- **Tareas = las dos OT maestras (PDF)**: OT mensual `OP-TS01-INSP-GRAL-EO-1M` (equipo operando, 15 tareas) y OT anual `OP-TS01-PREV-MEC/ELEC-EP-1A` (equipo parado, 7 tareas), con su «Tarea No.» (TS01-INSP-MEC-01…), texto y minutos tal como vienen en la OT. `tools/build_data.py` las lee de los PDF (necesita `pdftotext`) y les une el paro, nivel y herramientas del Excel y la foto de la ayuda visual por el texto de la actividad (en las 22 tareas coincide al 100 %).
+- **Tareas = las dos OT maestras (PDF)**: OT mensual `OP-TS01-INSP-GRAL-EO-1M` (equipo operando, 15 tareas) y OT anual `OP-TS01-PREV-MEC/ELEC-EP-1A` (equipo parado, 7 tareas), con su «Tarea No.» (TS01-INSP-MEC-01…), texto y duración tal como vienen en la OT (se muestran como minutos, ver abajo). `tools/build_data.py` las lee de los PDF (necesita `pdftotext`) y les une el paro, nivel y herramientas del Excel y la foto de la ayuda visual por el texto de la actividad (en las 22 tareas coincide al 100 %).
 - **Ruta guiada**: recorre las tareas de la OT que elijas con las claves oficiales B, BP, BCF, X y N/A, lecturas del motor (máx. 42 °C, 1.5 A, 220 V ±10 %), foto de referencia y seguridad. Al terminar **se descarga sola el PDF** (generador propio `app/js/pdf.js`, sin internet; trae el Orden No., la Tarea No. de cada una y las firmas) y la OT queda en el historial.
 - **Historial** (modo aparte): sin límite, con filtros (técnico, OT, fechas), Ver, PDF de cada OT y **Exportar a Excel** (CSV con BOM, un renglón por tarea).
 - **Borrar del historial** (una OT, todas o las filtradas) con **PIN de supervisor** (inicial `2026`, se cambia en la app y se guarda por equipo) y **respaldo automático en Excel antes de borrar**. Es un candado contra errores, no seguridad fuerte: quien sepa borrar los datos del navegador también borra el historial.
@@ -20,13 +20,15 @@
 ## Decisiones que conviene saber
 
 - Las **claves** de cada tarea son las de la rutina oficial del túnel (B, BP, BCF, X, N/A), no Conforme / Anomalía / Omitido de otras máquinas: en el PDF y en el Excel salen tal cual, con su significado. Con BP, BCF o X la observación es obligatoria. Una lectura fuera de rango no deja marcar B.
-- Las guías de desgaste de la banda son **4 varillas blancas** (la taxonomía dice 5): la cantidad de planta manda y la ficha lo avisa. Son los «rodillos y ruedas laterales» de la tarea 1101.
+- Las guías de desgaste de la banda son **4 varillas blancas** (la taxonomía dice 5): la cantidad de planta manda y la ficha lo avisa. Son los «rodillos y ruedas laterales» de la tarea TS01-INSP-MEC-01 (paso 1101 de la ayuda visual).
 - **No hay bomba de recirculación** aparte en planta: la tarea anual TS01-PREV-MEC-02 (cambio de rodamientos de la «bomba de recirculación») se enlaza a las chumaceras de la flecha, con una nota en la ficha. La mayoría de las tareas anuales usan la misma foto de la chumacera.
 - Las OT y tareas del Excel se muestran completas; lo que no coincide con planta se resuelve en el modelo y en las notas de `app/data/info.js`, nunca modificando el Excel.
 - Fuentes: el `index.html` pide Barlow Condensed e Inter a Google Fonts; sin internet se usa Arial Narrow o la letra del sistema (todo funciona igual).
 
 - **Diferencias entre la OT y el Excel** (manda la OT): cuatro tareas tienen otro «Tarea No.» en la hoja TAREAS del Excel (OT `TS01-INSP-GRAL-01` = Excel `TS01-GRAL-INSP-01`; `TS01-PRED-ELEC-01` = `TS01-PRED-MEC-01`; `TS01-PREV-ELEC-02` = `TS01-LIMP-ELEC-01`; `TS01-PREV-MEC-07` = `TS01-LIMP-MEC-01`; se guarda como `per_excel`) y `TS01-PREV-MEC-01` dura 2 en la OT y 4 en el Excel (se usa 2). Sistema y clase de cada tarea salen de su Tarea No.
-- **Hrs Estim. de la OT**: la OT las rotula «Hrs Estim.» pero los números son iguales a los minutos del Excel (30 para limpiar el tablero, 300 para cambiar rodamientos); en la app se muestran como **minutos**. Por confirmar con mantenimiento.
+- **Hrs Estim. de la OT**: la OT las rotula «Hrs Estim.» pero los números coinciden con los minutos del Excel (30 para limpiar el tablero, 300 para cambiar rodamientos; solo `TS01-PREV-MEC-01` difiere: 2 en la OT y 4 en el Excel); en la app se muestran como **minutos** (el campo se llama `min`). Por confirmar con mantenimiento.
+- **Requiere paro**: viene del Excel (la OT no trae esa columna). Dos tareas de la OT mensual de «equipo operando» salen con paro = SÍ (`TS01-PREV-ELEC-02`, limpieza del tablero, y `TS01-PREV-MEC-01`, chumaceras y grasa): la app muestra el aviso de paro y LOTO. Por confirmar con mantenimiento.
+- **«OT»** se usa para dos cosas: las 2 OT maestras (las tareas del túnel) y las 56 OT de falla del historial del Excel; en pantalla las segundas se rotulan «OT de falla».
 - El orden de las tareas en la ruta es el de la OT (el que imprime el sistema). Las fotos de las ayudas visuales se unen a cada tarea por su texto.
 - La tarea `TS01-PREV-MEC-02` habla de una «bomba de recirculación de agua» que en planta no existe aparte (ver arriba): se mantiene el texto de la OT y la nota «por confirmar».
 
@@ -44,10 +46,10 @@
 ## Base para otras máquinas
 
 - `CLAUDE.md` tiene las reglas del proyecto (las mismas de las otras máquinas más la regla de modelar según las fotos) y `.claude/skills/nueva-maquina/SKILL.md` la receta paso a paso (`/nueva-maquina`).
-- `tools/build_data.py` genera `app/data` y `app/img` desde el Excel y los .docx de rutinas; las descripciones a mano están en `app/data/info.js`.
+- `tools/build_data.py` genera `app/data` y `app/img` desde las OT en PDF, el Excel y los .docx de las ayudas visuales; las descripciones a mano están en `app/data/info.js`.
 
 ## Cómo probarlo
 
 1. Abre `dist/Tunel01_interactivo.html` (o `app/index.html`) con doble clic en Chrome o Edge.
-2. En **② Ruta guiada** haz una rutina completa: al final se descarga el PDF.
+2. En **② Ruta guiada** haz una OT completa (todas sus tareas): al final se descarga el PDF.
 3. En **③ Historial** revisa que aparezca; prueba Ver, PDF, Exportar a Excel y borrar con el PIN `2026`.

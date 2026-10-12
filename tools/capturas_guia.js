@@ -16,12 +16,14 @@ const quiero = n => !SOLO.length || SOLO.includes(n.replace('guia_', ''));
   await p.addInitScript(() => { try {
     localStorage.setItem('ts01_calidad', 'Media');
     const mk = (d, fid, ficha, orden, nombre, res) => ({ id: Date.parse(d), iso: new Date(d).toISOString(), ficha, orden, fid, nombre, total: res.length, res });
-    const r = cl => ({ codigo: 'TS01-INSP-MEC-01', min: 5, texto: 'verifique los rodillos y ruedas laterales que no presenten desgaste, golpes, se encuentren completos.', clave: cl, nota: cl === 'B' ? '' : 'Ejemplo', lec: null, alerta: '', puntos: ['transmision:12'] });
+    const CM = ['TS01-INSP-ELEC-01', 'TS01-INSP-GRAL-01', 'TS01-INSP-GRAL-02', 'TS01-INSP-MEC-01', 'TS01-INSP-MEC-02', 'TS01-INSP-MEC-03', 'TS01-INSP-MEC-04', 'TS01-INSP-MEC-05', 'TS01-INSP-MEC-06', 'TS01-INSP-MEC-07', 'TS01-INSP-MEC-08', 'TS01-INSP-MEC-09', 'TS01-PRED-ELEC-01', 'TS01-PREV-ELEC-02', 'TS01-PREV-MEC-01'];
+    const CA = ['TS01-PREV-ELEC-01', 'TS01-PREV-MEC-02', 'TS01-PREV-MEC-03', 'TS01-PREV-MEC-04', 'TS01-PREV-MEC-05', 'TS01-PREV-MEC-06', 'TS01-PREV-MEC-07'];
+    const res = (cods, malos) => cods.map((c, i) => { const cl = malos[i] || 'B'; return { codigo: c, min: 5, texto: 'tarea de ejemplo', clave: cl, nota: cl === 'B' ? '' : 'Ejemplo', lec: null, alerta: '', puntos: [] }; });
     const M = 'OP-TS01-INSP-GRAL-EO-1M', A = 'OP-TS01-PREV-MEC/ELEC-EP-1A';
     localStorage.setItem('ts01_hist', JSON.stringify([
-      mk('2026-10-09T08:10:00', 'mensual', 'OT mensual', M, 'Técnico de ejemplo', [r('B'), r('B'), r('BP'), r('B'), r('N/A')]),
-      mk('2026-10-02T08:05:00', 'anual', 'OT anual', A, 'Operador de ejemplo', [r('B'), r('B'), r('B'), r('BCF')]),
-      mk('2026-09-11T09:30:00', 'mensual', 'OT mensual', M, 'Técnico de ejemplo', [r('B'), r('X'), r('B'), r('B'), r('B')])]));
+      mk('2026-10-09T08:10:00', 'mensual', 'OT mensual', M, 'Técnico de ejemplo', res(CM, { 2: 'BP', 13: 'N/A' })),
+      mk('2026-10-02T08:05:00', 'anual', 'OT anual', A, 'Operador de ejemplo', res(CA, { 3: 'BCF' })),
+      mk('2026-09-11T09:30:00', 'mensual', 'OT mensual', M, 'Técnico de ejemplo', res(CM, { 5: 'X' }))]));
   } catch (e) {} });
   await p.goto(URL);
   await p.waitForFunction(() => window.__ts && document.getElementById('loading').classList.contains('done'), null, { timeout: 120000 });

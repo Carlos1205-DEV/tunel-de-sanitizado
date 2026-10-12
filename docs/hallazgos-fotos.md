@@ -1,5 +1,7 @@
 # Hallazgos de las fotos de planta (ayudas visuales de las rutinas)
 
+> **Nota:** en este documento «tarea 1101», «tarea anual 1302», etc. son los **pasos de la ayuda visual**; las tareas del túnel son las de las OT (Tarea No. TS01-…): ver la tabla de equivalencias al final. Lo de la v1 se deja como registro histórico.
+
 Las fotos están en `app/img/ref_01.jpg` … `ref_11.jpg` (`ref_NN` = `word/media/imageNN.jpeg` de
 `REFERENCIA VISUAL MENSUAL (TUNEL DE SANITIZADO 01).docx`; ese número no coincide con el orden visual de la página).
 El dibujo de ensamble del Excel es `app/img/x_general.jpg`.
@@ -126,4 +128,4 @@ Las **tareas del túnel** son las de las dos órdenes de trabajo maestras en PDF
 | 1302 a 1306 | TS01-PREV-MEC-02 a 06 | `ref_a1` |
 | 1307 | TS01-PREV-MEC-07 | `ref_a1` |
 
-Ojo con las dos fotos que se repiten (`ref_09` en tres tareas, `ref_a1` en todas las anuales): son las que trae la ayuda visual.
+Ojo con las fotos que se repiten (`ref_09` en tres tareas y `ref_a1` en seis de las anuales; `TS01-PREV-ELEC-01` usa `ref_04`): son las que trae la ayuda visual.

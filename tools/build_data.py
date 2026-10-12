@@ -64,7 +64,7 @@ for it in taxo['transmision']['items']:
 # componentes que no están en la taxonomía del Excel pero salen en las rutinas, fotos y fallas
 EXTRA = {
     'id': 'cubierta', 'sys': 'mec', 'name': 'Campana, cortinas, tina y caja del motor',
-    'desc': 'Piezas que no figuran en la taxonomía del Excel pero aparecen en las rutinas, las fotos de planta y el historial de fallas: campana del túnel, cortinas de PVC (hawaianas), tina (charola) de acero inoxidable, mangueras, garrafa de sanitizante y la caja de acero inoxidable que cubre el motorreductor en el lado B. Se modelaron a partir de las fotos de las rutinas y de lo que indicó el personal de planta.',
+    'desc': 'Piezas que no figuran en la taxonomía del Excel pero aparecen en las tareas de las OT, las fotos de planta y el historial de fallas: campana del túnel, cortinas de PVC (hawaianas), tina (charola) de acero inoxidable, mangueras, garrafa de sanitizante y la caja de acero inoxidable que cubre el motorreductor en el lado B. Se modelaron a partir de las fotos de las rutinas y de lo que indicó el personal de planta.',
     'extra': 1,
     'items': [
         {'i': 1, 'no': 0, 'n': 'CAMPANA DEL TÚNEL (CUBIERTA DE ACERO INOXIDABLE)', 'm': 'ACERO INOXIDABLE', 'p': '', 'q': 1, 'x': 1},

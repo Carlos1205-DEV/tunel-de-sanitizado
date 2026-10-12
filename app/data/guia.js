@@ -62,7 +62,7 @@ window.GUIA = [
 {img:guia_operacion|El túnel en operación}
 {img:guia_rayosx|Rayos X: interior de la campana y del gabinete}
 {img:guia_explosion|Explosión general}
-<p><b>Mapa de calor</b> (en <i>Más</i>) pinta los elementos por la severidad de sus refacciones (rojo crítica, naranja alta, amarillo media, verde baja) o por las fallas históricas (OT).</p>
+<p><b>Mapa de calor</b> (en <i>Más</i>) pinta los elementos por la severidad de sus refacciones (rojo crítica, amarillo moderada, verde normal, gris sin refacción) o por las fallas históricas (OT).</p>
 {img:guia_calor|Mapa de calor por severidad de refacciones}
 <p><b>Paro de emergencia</b> (en <i>Más</i>): el túnel se detiene y no arranca hasta restablecerlo.</p>`
   },
@@ -77,7 +77,7 @@ window.GUIA = [
 <ol><li>Arriba, presiona <b>② Ruta guiada</b>.</li>
 <li>Lee la seguridad (EPP, tierra, paro y LOTO) y escribe tu nombre (se recuerda para la próxima vez).</li>
 <li>Elige la OT: mensual o anual.</li>
-<li>En cada tarea la cámara va al elemento y el panel dice qué hacer, cada cuánto, cuántos minutos y muestra la foto de referencia. Si dice <b>Requiere paro</b>, detén la máquina y aplica el bloqueo (LOTO) antes.</li>
+<li>En cada tarea la cámara va al elemento y el panel dice qué hacer, cada cuánto, cuántos minutos (los de la OT) y muestra la foto de referencia. Si dice <b>Requiere paro</b>, detén la máquina y aplica el bloqueo (LOTO) antes.</li>
 <li>Si la tarea pide lecturas (temperatura, amperaje y voltaje del motor), escríbelas: si alguna sale de rango te avisa.</li>
 <li>Marca la clave: <b>B</b> se realizó y todo bien · <b>BP</b> se realizó pero hay pendientes · <b>BCF</b> se realizó y se corrigió la falla · <b>X</b> no se realizó · <b>N/A</b> no aplica. Con BP, BCF o X es obligatorio escribir la observación.</li>
 <li><b>← Anterior</b> regresa una tarea; <b>Ver foto de referencia</b> muestra u oculta la foto.</li></ol>
@@ -86,7 +86,7 @@ window.GUIA = [
   },
   {
     t: 'Historial de OT',
-    html: `<p>Arriba, presiona <b>③ Historial</b>. Ahí quedan todas las OT que se terminaron en <b>② Ruta guiada</b> en ese equipo, con todas sus tareas, de la más reciente a la más antigua. Solo se guardan las que llegan hasta la última tarea.</p>
+    html: `<p>Arriba, presiona <b>③ Historial</b>. Ahí quedan todas las OT que se terminaron en <b>② Ruta guiada</b> en ese equipo, con todas sus tareas, de la más reciente a la más antigua. Una OT se guarda cuando todas sus tareas tienen clave; si empezaste a media OT (por ejemplo desde la pestaña Tareas de un elemento), la ruta te lleva a las tareas que falten antes de guardar.</p>
 {img:guia_historial|Historial con filtros}
 <ul><li><b>Filtros:</b> por técnico, por OT (mensual o anual) y por fechas (desde / hasta).</li>
 <li><b>Ver:</b> abre el detalle de una OT, tarea por tarea (con <b>← Volver al historial</b> regresas a la lista).</li>
@@ -103,8 +103,8 @@ window.GUIA = [
   {
     t: 'Análisis: fallas y refacciones',
     html: `<p>Arriba, presiona <b>④ Análisis</b>. Resume el historial del Excel:</p>
-<ul><li><b>Pareto de OT:</b> al tocar una barra se iluminan en la máquina los elementos donde ocurrieron.</li>
-<li><b>OT por sección:</b> al tocar una barra la cámara va a esa sección.</li>
+<ul><li><b>Pareto de OT de falla:</b> al tocar una barra se iluminan en la máquina los elementos donde ocurrieron.</li>
+<li><b>OT de falla por sección:</b> al tocar una barra la cámara va a esa sección.</li>
 <li><b>Refacciones críticas:</b> al tocar una, la cámara va al elemento.</li></ul>
 <p>Arriba del Pareto hay botones para encender o apagar el mapa de calor.</p>
 {img:guia_analisis|Modo Análisis}`

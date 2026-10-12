@@ -174,7 +174,7 @@
   function updateLegend() {
     const L = $('#legend');
     if (S.heat === 'refs') L.innerHTML = ['CRÍTICO', 'MEDIA', 'BAJA'].map(k => `<span><i style="background:#${SEV_HEX[k].toString(16).padStart(6, '0')}"></i>${SEV_LABEL[k]}</span>`).join('') + '<span><i style="background:#59636d"></i>Sin refacción</span>';
-    else if (S.heat === 'fallas') L.innerHTML = '<span><i style="background:hsl(119,62%,45%)"></i>Pocas OT</span><span><i style="background:hsl(0,62%,45%)"></i>Muchas OT</span><span><i style="background:#59636d"></i>Sin OT</span>';
+    else if (S.heat === 'fallas') L.innerHTML = '<span><i style="background:hsl(119,62%,45%)"></i>Pocas fallas</span><span><i style="background:hsl(0,62%,45%)"></i>Muchas fallas</span><span><i style="background:#59636d"></i>Sin OT</span>';
     else L.innerHTML = '';
     resize();
   }
@@ -401,7 +401,7 @@
   $('#sysToggle').addEventListener('click', () => document.body.classList.toggle('sys-open'));
   const q = $('#q'), qres = $('#qres'), INDEX = [];
   TAXO.comps.forEach(c => { INDEX.push({ t: c.name, sub: 'Sección · ' + c.n + ' elementos', sel: { kind: 'comp', id: c.id } }); c.items.forEach(it => INDEX.push({ t: clean(it.n), sub: 'Elemento · ' + c.name + (it.p ? ' · ' + it.p : '') + ' · ×' + it.q, sel: { kind: 'elem', id: it.key }, extra: (it.p + ' ' + it.m).toLowerCase() })); });
-  TASKS.forEach(t => INDEX.push({ t: t.texto.charAt(0).toUpperCase() + t.texto.slice(1).toLowerCase(), sub: 'Tarea ' + t.codigo + ' · ' + t.fichaTitulo, task: t }));
+  TASKS.forEach(t => INDEX.push({ t: t.texto.charAt(0).toUpperCase() + t.texto.slice(1).toLowerCase(), sub: 'Tarea ' + t.codigo + ' · ' + t.fichaTitulo, extra: t.codigo + ' ' + t.orden + ' ' + t.fichaTitulo + ' ' + (FREQ[t.frec] || t.frec), task: t }));
   DATA.refs.forEach(r => INDEX.push({ t: r.desc, sub: 'Refacción · ' + (SEV_LABEL[r.sev] || '') + ' · ' + r.parte, sel: r.elems[0] ? { kind: 'elem', id: r.elems[0] } : null, tab: 'refs' }));
   INDEX.forEach(x => { x.l = (x.t + ' ' + (x.extra || '')).toLowerCase(); });
   q.addEventListener('input', () => {
@@ -412,7 +412,7 @@
   });
   qres.addEventListener('click', e => {
     const b = e.target.closest('button[data-i]'); if (!b) return; const h = INDEX[+b.dataset.i]; qres.classList.remove('open'); q.value = ''; document.body.classList.remove('sys-open');
-    if (h.task) { const pt = h.task.puntos.filter(p => p !== 'ALL'); setMode('explorar'); if (pt.length && pt[0].indexOf('comp:') !== 0) select({ kind: 'elem', id: pt[0] }, { tab: 'tareas' }); else if (pt.length) select({ kind: 'comp', id: pt[0].slice(5) }, { tab: 'tareas' }); else toast('Esta tarea aplica al equipo completo'); }
+    if (h.task) { const pt = h.task.puntos.filter(p => p !== 'ALL'); setMode('explorar'); if (pt.length && pt[0].indexOf('comp:') !== 0) select({ kind: 'elem', id: pt[0] }, { tab: 'tareas' }); else if (pt.length) select({ kind: 'comp', id: pt[0].slice(5) }, { tab: 'tareas' }); else { setMode('ruta'); window.MODES && window.MODES.openTask(h.task.ficha, h.task.codigo); } }
     else if (h.sel) { setMode('explorar'); select(h.sel, { tab: h.tab }); }
   });
   document.addEventListener('click', e => { if (!e.target.closest('.search')) qres.classList.remove('open'); });
@@ -484,7 +484,7 @@
     let body = '';
     if (S.tab === 'resumen') {
       body = `<p class="p-desc">${esc(im.d || 'Elemento de la taxonomía del túnel.')}</p>
-        <div class="badges">${tag(plural(D0.tareas.length, 'tarea', 'tareas'))}${tag(plural(D0.refs.length, 'refacción', 'refacciones'))}${crit ? tag(crit + ' crítica' + (crit > 1 ? 's' : ''), 'crit') : ''}${tag(plural(D0.fallas.length, 'OT', 'OT'))}${e.pend ? tag('Sin No. de parte', 'nuevo') : ''}${e.x ? tag('No figura en la taxonomía', 'nuevo') : ''}${im.aprox ? tag('Aproximado · no sale en las fotos', 'nuevo') : ''}</div>
+        <div class="badges">${tag(plural(D0.tareas.length, 'tarea', 'tareas'))}${tag(plural(D0.refs.length, 'refacción', 'refacciones'))}${crit ? tag(crit + ' crítica' + (crit > 1 ? 's' : ''), 'crit') : ''}${tag(plural(D0.fallas.length, 'OT de falla', 'OT de falla'))}${e.pend ? tag('Sin No. de parte', 'nuevo') : ''}${e.x ? tag('No figura en la taxonomía', 'nuevo') : ''}${im.aprox ? tag('Aproximado · no sale en las fotos', 'nuevo') : ''}</div>
         <div class="card" style="border-left:3px solid ${c.color}">
         <div class="kv"><span>Nombre completo</span><b>${esc(clean(e.n))}</b></div>
         <div class="kv"><span>Elemento</span><b>${idx + 1} de ${c.n}${e.no ? ' · No. ' + e.no + ' en la taxonomía' : ''}</b></div>
@@ -522,7 +522,7 @@
     return `<div class="p-head"><div class="p-sys">Vista general</div><div class="p-title">Túnel de sanitizado 01</div></div>
       <div class="p-body"><p class="p-desc">Modelo 3D hecho con las <b>fotos de planta</b> de las ayudas visuales; la taxonomía del Excel aporta los nombres, secciones, partes y refacciones. Cada uno de los <b>${TOTAL_EL} elementos</b> está modelado y agrupado en su sección. Gíralo, toca cualquier pieza y verás qué es, qué tareas de las OT se le hacen, qué refacciones lleva y cómo ha fallado.</p>
       <div class="btns"><button class="btn pri" data-act="tour">▶ Recorrido por las secciones</button></div>
-      <div class="kpis" style="margin:14px 0"><div class="kpi"><b>${TAXO.comps.length}</b><span>secciones</span></div><div class="kpi"><b>${TOTAL_EL}</b><span>elementos</span></div><div class="kpi"><b>${TASKS.length}</b><span>tareas en las 2 OT</span></div><div class="kpi"><b>${DATA.fallas.length}</b><span>OT en el historial</span></div></div>
+      <div class="kpis" style="margin:14px 0"><div class="kpi"><b>${TAXO.comps.length}</b><span>secciones</span></div><div class="kpi"><b>${TOTAL_EL}</b><span>elementos</span></div><div class="kpi"><b>${TASKS.length}</b><span>tareas en las 2 OT</span></div><div class="kpi"><b>${DATA.fallas.length}</b><span>OT de falla en el historial</span></div></div>
       <h3 class="sec">Prueba esto</h3>
       <div class="chips"><button class="chip" data-act="run">▶ Simular operación</button><button class="chip" data-act="door">Abrir el gabinete</button><button class="chip" data-act="xray">Ver por dentro (rayos X)</button><button class="chip" data-act="explode">Explosionar el equipo</button><button class="chip" data-act="heat" data-h="refs">Mapa de calor de refacciones</button></div>
       <h3 class="sec">Secciones</h3><div class="chips">${TAXO.comps.map(c => `<button class="chip" data-act="comp" data-id="${c.id}" style="border-left:3px solid ${c.color}">${esc(c.name)}</button>`).join('')}</div>

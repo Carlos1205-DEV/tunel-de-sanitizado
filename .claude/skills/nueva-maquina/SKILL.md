@@ -1,6 +1,6 @@
 ---
 name: nueva-maquina
-description: Receta paso a paso para hacer la app 3D interactiva de otra máquina de Qualtia a partir de esta base (mismo Excel de mantenimiento, mismas rutinas, misma app y mismo historial con PDF). Úsala cuando Jose Carlos pida hacer, empezar o continuar otra máquina.
+description: Receta paso a paso para hacer la app 3D interactiva de otra máquina de Qualtia a partir de esta base (mismo Excel de mantenimiento, mismas OT, misma app y mismo historial con PDF). Úsala cuando Jose Carlos pida hacer, empezar o continuar otra máquina.
 ---
 
 # Nueva máquina a partir de la base del Túnel de Sanitizado 01

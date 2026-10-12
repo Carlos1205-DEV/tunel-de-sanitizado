@@ -97,7 +97,7 @@
     return `<div class="p-head"><div class="p-sys">${esc(f.corto || f.titulo)} · ${esc(f.orden || h.orden || '')}${h.iso ? ' · ' + esc(fechaTxt(h)) : ''}</div><div class="score">${Math.round(ok / (res.length || 1) * 100)}%</div><div class="note">${esc(resumenCorto(res))}${h.nombre ? ' · ' + esc(h.nombre) : ''}</div></div>
     <div class="p-body">
       <div class="btns" style="margin-top:0"><button class="btn pri" data-act="hpdf" data-id="${h.id || ''}">Descargar PDF</button><button class="btn" data-act="rcopy" data-id="${h.id || ''}">Copiar reporte</button>${back ? `<button class="btn" data-act="${back}">← Volver al historial</button>` : '<button class="btn" data-act="rexit">Otra OT</button>'}</div>
-      ${pend.length ? `<h3 class="sec">Pendientes para seguimiento</h3>${pend.map(r => `<div class="row"><div class="top"><b>${esc(sentence(r.texto))}</b>${tag(r.clave, r.clave === 'X' ? 'crit' : 'media')}</div>${r.nota ? `<div class="sub">${esc(r.nota)}</div>` : ''}${r.alerta ? `<div class="sub" style="color:var(--crit)">Lectura fuera de rango: ${esc(r.alerta)}</div>` : ''}${r.puntos && r.puntos[0] && r.puntos[0] !== 'ALL' ? `<button class="chip" style="margin-top:6px" data-act="rfly" data-k="${r.puntos[0]}">Ver pieza</button> <button class="chip" style="margin-top:6px" data-act="rexplore" data-k="${r.puntos[0]}">Historial y refacciones</button>` : ''}</div>`).join('')}` : '<div class="callout" style="margin:12px 0">Sin pendientes. Buen trabajo.</div>'}
+      ${pend.length ? `<h3 class="sec">Pendientes para seguimiento</h3>${pend.map(r => `<div class="row"><div class="top"><b>${esc(sentence(r.texto))}</b>${tag(r.clave, r.clave === 'X' ? 'crit' : 'media')}</div><div class="sub">Tarea No. ${esc(r.codigo)}</div>${r.nota ? `<div class="sub">${esc(r.nota)}</div>` : ''}${r.alerta ? `<div class="sub" style="color:var(--crit)">Lectura fuera de rango: ${esc(r.alerta)}</div>` : ''}${r.puntos && r.puntos[0] && r.puntos[0] !== 'ALL' ? `<button class="chip" style="margin-top:6px" data-act="rfly" data-k="${r.puntos[0]}">Ver pieza</button> <button class="chip" style="margin-top:6px" data-act="rexplore" data-k="${r.puntos[0]}">Historial y refacciones</button>` : ''}</div>`).join('')}` : '<div class="callout" style="margin:12px 0">Sin pendientes. Buen trabajo.</div>'}
       <h3 class="sec">Tareas de la OT</h3>
       <table class="t">${res.map(r => r ? `<tr><td>${esc(r.codigo)}</td><td>${esc(sentence(r.texto))}${r.lec ? `<br><span class="note">${esc(readingText(r.lec))}</span>` : ''}${r.nota && r.clave === 'B' ? `<br><span class="note">${esc(r.nota)}</span>` : ''}</td><td><b>${esc(r.clave)}</b></td></tr>` : '').join('')}</table>
     </div>`;
@@ -120,11 +120,12 @@
     if (['BP', 'BCF', 'X'].includes(c) && !dr.nota) { TS.toast('Escribe la observación para la clave ' + c); const n = $('#rNote'); if (n) n.focus(); return; }
     let alerta = ''; if (dr.lec) { const out = evalReading(dr.lec); alerta = out.join(', '); if (out.length && c === 'B') { TS.toast('Hay una lectura fuera de rango: usa BP o BCF y anótalo'); ['rTemp', 'rAmp', 'rVolt'].forEach(id => $('#' + id) && $('#' + id).classList.add('bad')); return; } }
     R.res[R.i] = { codigo: it.codigo, min: it.min, texto: it.texto, clave: c, nota: dr.nota, lec: dr.lec, alerta, puntos: it.puntos };
-    if (R.i + 1 >= f.items.length) {
+    const falta = f.items.findIndex((_, k) => !R.res[k]);               // primera tarea sin clave (si se empezó a media OT, se pide el resto antes de guardar)
+    if (falta === -1) {
       R.done = true; R.rec = saveReport(f); TS.setFocus(null, { fly: false }); TS.setView('iso'); TS.renderPanel();
       descargarPDF(R.rec, true);                                       // el PDF de cada OT se genera solo al terminar
     }
-    else { R.i++; TS.renderPanel(); rutaGo(); }
+    else { if (falta !== R.i + 1) TS.toast('Aún falta la tarea ' + (falta + 1) + ' de ' + f.items.length + ': la OT se guarda cuando todas tienen clave'); R.i = falta; TS.renderPanel(); rutaGo(); }
   };
   ACT.rprev = () => { if (R.i > 0) { R.i--; TS.renderPanel(); rutaGo(); } };
   ACT.rphoto = () => { const keep = readDraft(); const cur = R.res[R.i] || {}; R.res[R.i] = Object.assign(cur, { nota: keep.nota, lec: keep.lec || cur.lec, clave: cur.clave }); R.photo = !R.photo; TS.renderPanel(true); if (!cur.clave) delete R.res[R.i]; };
@@ -200,10 +201,10 @@
   }
   const limpio = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
   function exportarCSV(list, nombre, aviso) {
-    const rows = [['Fecha', 'Hora', 'Técnico', 'OT (Orden No.)', 'OT', 'Tarea', 'Tarea No.', 'Actividad', 'Clave', 'Significado', 'Temperatura (°C)', 'Amperaje (A)', 'Voltaje (V)', 'Fuera de rango', 'Observaciones']];
+    const rows = [['Fecha', 'Hora', 'Técnico', 'Orden No.', 'OT', '#', 'Tarea No.', 'Actividad', 'Min', 'Clave', 'Significado', 'Temperatura (°C)', 'Amperaje (A)', 'Voltaje (V)', 'Fuera de rango', 'Observaciones']];
     list.slice().reverse().forEach(h => {
       const d = h.iso ? new Date(h.iso) : null;
-      h.res.forEach((r, i) => { if (r) rows.push([d ? d.toLocaleDateString('es-MX') : (h.fecha || ''), d ? d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '', h.nombre || '', h.orden || '', h.ficha, i + 1, r.codigo, sentence(r.texto), r.clave, (CLAVES.find(k => k[0] === r.clave) || [])[1] || '', r.lec ? r.lec.temp : '', r.lec ? r.lec.amp : '', r.lec ? r.lec.volt : '', r.alerta || '', r.nota || '']); });
+      h.res.forEach((r, i) => { if (r) rows.push([d ? d.toLocaleDateString('es-MX') : (h.fecha || ''), d ? d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) : '', h.nombre || '', h.orden || '', h.ficha, i + 1, r.codigo, sentence(r.texto), r.min !== undefined ? r.min : minDe(otOf(h.fid), r.codigo), r.clave, (CLAVES.find(k => k[0] === r.clave) || [])[1] || '', r.lec ? r.lec.temp : '', r.lec ? r.lec.amp : '', r.lec ? r.lec.volt : '', r.alerta || '', r.nota || '']); });
     });
     const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
     if (window.claude) {
@@ -350,10 +351,10 @@
     <div class="p-body"><p class="p-desc">Toca una barra del Pareto para ver en el 3D qué piezas intervienen. También puedes pintar el modelo por severidad de refacciones o por cantidad de OT.</p>
       <div class="kpis"><div class="kpi"><b>${DATA.fallas.length}</b><span>OT desde ene-2025</span></div><div class="kpi"><b>${corr}</b><span>correctivas y de apoyo</span></div><div class="kpi"><b>${Math.round(tot / 60)} h</b><span>de trabajo acumulado</span></div><div class="kpi"><b>${crit.length}</b><span>refacciones críticas</span></div></div>
       <div class="btns"><button class="chip ${S.heat === 'refs' ? 'on' : ''}" data-act="aheat" data-h="refs">Mapa: refacciones</button><button class="chip ${S.heat === 'fallas' ? 'on' : ''}" data-act="aheat" data-h="fallas">Mapa: fallas (OT)</button><button class="chip ${S.heat === 'none' ? 'on' : ''}" data-act="aheat" data-h="none">Apagar mapa</button></div>
-      <h3 class="sec">Pareto de OT</h3>
+      <h3 class="sec">Pareto de OT de falla</h3>
       ${DATA.pareto.map((r, i) => `<button class="bar ${paretoSel === i ? 'on' : ''}" data-act="pareto" data-i="${i}"><span class="lb">${esc(sentence(r.grupo))}</span><span class="tr"><i style="width:${r.ot / mx * 100}%"></i></span><span class="v">${r.ot} · ${Math.round(min(r.grupo) / 60 * 10) / 10} h</span></button>`).join('')}
       <p class="note">Fuente: hoja FALLAS REPETITIVAS (56 OT cerradas). Las barras muestran OT y horas de trabajo. Las inspecciones programadas y la documentación no son fallas.</p>
-      <h3 class="sec">OT por sección</h3>
+      <h3 class="sec">OT de falla por sección</h3>
       ${sections.map(x => `<button class="bar" data-act="asec" data-id="${x.id}"><span class="lb" style="color:${COMP[x.id].color}">${esc(COMP[x.id].name)}</span><span class="tr"><i style="width:${x.n / sm * 100}%;background:${COMP[x.id].color}"></i></span><span class="v">${x.n}</span></button>`).join('')}
       <h3 class="sec">Refacciones críticas (${crit.length})</h3>
       ${crit.map((r, i) => `<button class="row click" data-act="acrit" data-i="${i}"><div class="top"><b>${esc(r.desc.length > 70 ? r.desc.slice(0, 68) + '…' : r.desc)}</b>${TS.sevTag(r.sev)}</div><div class="sub">${esc(r.uds || '')} · ${esc(r.parte)}</div></button>`).join('')}
